@@ -10,16 +10,16 @@ from cpu import CPU
 
 # usage: python run.py program.bin
 
-# run a binary program stored in an external file as a player on some cpu
 def run_file(filename, cpu, player):
+    ''' run a binary program stored in an external file as a player on some cpu '''
     with open(filename, 'rb') as f:
         # load the program from the file
         program = f.read()
         # and tell the player to run that program
         return player.run_program(program, cpu)
 
-# run a program stored in an extern file in a dummy game environment with a dummy player
 def test_run(filename):
+    ''' run a program stored in an extern file in a dummy game environment with a dummy player '''
     # create the dummy game instance
     game = Game()
     # create the dummy player instance
