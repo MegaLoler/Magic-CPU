@@ -11,9 +11,6 @@ class ExecutionContext:
         self.player = player
         # pointer is where the cpu is currently looking
         self.jump(pointer)
-        # a temporary "register" for holding any temporary value
-        # there'll be examples of what it's for
-        self.register = None
         # this will tell whether the program has halted or not
         # when a program is finished and wants to exit, it will use the halt operation
         # which will then set this to True
