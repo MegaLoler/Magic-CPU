@@ -1,82 +1,39 @@
-#!/usr/bin/env python3
+import game
+import player
+import context
 
-# this is just a dummy player class
-# to show players having their own ram
-class Player:
-    def __init__(self):
-        self.ram = bytes(2**10) # 1kb of ram
+# array containing all the op code functions arranged such that array index = opcode
+# undefined opcodes will just have "None" at that index instead of a function
+# 256, because there are 256 values for a single byte
+# (assuming for now that opcodes are 8-bit numbers)
+ops = [None] * 256
 
-# i'm guessing you probably don't want the omnipresent ram as a global variable, so you can move it wherever you want to keep it
-omni_ram = bytes(2**10*32) # 32kb of ram
-
-# a context for the cpu to keep track of where it is in some memory
-# for example, you would load program code into a context object like this
-# and give it to the cpu to execute code from that memory
-# also can tell the cpu who is running this program
-# that way access can be had to the player's own local ram
-class ExecutionContext:
-    def __init__(self, memory, pointer=0, player=None):
-        # memory is the bytes being accessed
-        self.memory = memory
-        # pointer is where the cpu is currently looking
-        self.pointer = pointer
-        # a temporary "register" for holding any temporary value
-        # there'll be examples of what it's for
-        self.register = None
-
-    # increment the pointer, but wrap around to the beginning if reached the end
-    def next(self):
-        self.pointer = (self.pointer + 1) % len(self.memory)
-
-    # grab the next byte and increment the pointer to be ready for the byte after that
-    def fetch(self):
-        byte = self.memory[self.pointer]
-        self.next()
-        return byte
-
-    # grab the next 2 bytes as a 16-bit value
-    # assuming for now that byte order will be little-endian
-    # meaning the least significant digits portion of the number comes in the first byte
-    # (as opposed to big-endian, the other way 'round)
-    # "word" often refers to a 16-byte value
-    def fetch_word(self):
-        # fetch the low byte
-        low_byte = self.fetch()
-        # and then the high byte after it
-        # (little-endian order)
-        high_byte = self.fetch()
-        # and assemble it into a 16-bit value!
-        # the high byte needs to be shifted left 8 bits (which means multiplied by 256)
-        return low_byte + high_byte << 8
+# return a decorator to define an opcode function in the CPU class
+def op(opcode):
+    def decorator(handler):
+        # make sure the opcode wasn't already defined first
+        if ops[opcode]: raise Exception(f'Opcode {opcode} has already been defined!')
+        # set the opcode handler for this opcode
+        ops[opcode] = handler
+        return handler
+    return decorator
 
 # calling it CPU for now, i know it's supposed to actually be different from a real CPU though
 class CPU:
+    def __init__(self, game):
+        # provide the game instance to the cpu in order for it to access the game's omnipresent ram
+        self.game = game
+
     # call this function to execute one operation, to step through the program
     # call it repeatedly to run the program continuously
     # give it an execution context with the memory containing the program to run
     def step(self, context):
         # the first thing to do, is to fetch the op code
-        op = context.fetch()
+        opcode = context.fetch()
         # then lookup the function to handle that operation!
-        handler = ops[op]
+        handler = ops[opcode]
         # and call it if it exists
         if handler: handler(context)
-
-    # class array containing all the op code functions arranged such that array index = opcode
-    # undefined opcodes will just have "None" at that index instead of a function
-    # 256, because there are 256 values for a single byte
-    # (assuming for now that opcodes are 8-bit numbers)
-    ops = [None] * 256
-
-    # return a decorator to define an opcode function
-    def op(opcode):
-        def decorator(handler):
-            # make sure the opcode wasn't already defined first
-            if ops[opcode]: raise Exception(f'Opcode {opcode} has already been defined!')
-            # set the opcode handler for this opcode
-            ops[opcode] = handler
-            return handler
-        return decorator
 
     # the "nop" or "no-operation" opcode
     # it'll be opcode 0, so that a byte of 0 in the code means do nothing
@@ -167,7 +124,7 @@ class CPU:
     @op(7)
     def op_load_omni_ram_byte(context):
         address = context.fetch_word()
-        byte = omni_ram[address]
+        byte = game.ram[address]
         context.register = byte
 
     # the "store byte into player ram" opcode
