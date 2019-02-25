@@ -1,57 +1,64 @@
 from enum import Enum
-
-#prob gonna remove these
-
-class AddressingMode(Enum):
-    ''' represents the different kinds of addressing modes
-    
-    addressing mode is whether the argument is any of the following:
-    - immediate: the argument value is embeded directly in the bytestream immediately following the opcode
-    - direct: the argument value is located in memory at the address immediately following the opcode
-    - indirect: the argumennt value is located in memory at the address specified in memory located at the address immediately following the opcode
-    '''
-    IMMEDIATE = 1
-    DIRECT = 2
-    INDIRECT = 3
-
-class DataType(Enum):
-    ''' represents the different data types
-    
-    data type is what kind of data it is, obviously, haha, and is any of the following:
-    - byte (8 bit value)
-    - word (16 bit value)
-    - string (a series of ascii encoded characters terminated with a null byte (= 0))
-    '''
-    BYTE = 1
-    WORD = 2
-    STRING = 3
-
-class MemoryTarget(Enum):
-    ''' represents the different possible memories to be accessed
-
-    - program memory, refers to the memory the program is running from
-    - player memory, refers to each player's individual ram
-    - omni memory, refers to the omnipresent ram in a game instance
-    '''
-    PROGRAM = 1
-    PLAYER = 2
-    OMNI = 3
+from data_type import DataType
 
 class Argument:
     ''' represents an argument to an instruction
 
     an instruction argument designates a value to be resolved at the time of executing that instruction
     '''
-    def __init__(self, value, addressing_mode=AddressingMode.IMMEDIATE, data_type, memory):
-        self.value = value
-        self.addressing_mode = addressing_mode
-        self.data_type = data_type
-        self.memory = memory
-
-    def read(self, context):
+    def read(self):
         ''' read the value that htis argument represents at runtime in an execution context '''
-        # TODO
+        pass
+        # abstract
 
-    def write(self, context, value):
+    def write(self, value):
         ''' write a value to a location represented by this argument at runtime '''
-        # TODO
+        pass
+        # abstract
+
+class Literal(Argument):
+    ''' represents a literal value as an argument '''
+    def __init__(self, value):
+        self.value = value
+
+    def read(self):
+        return self.value
+
+class Immediate(Literal):
+    ''' represents an immediate value as an argument '''
+    def __init__(self, context, data_type):
+        # fetch the value from the execution context, program memory
+        self.value = context.fetch(data_type)
+
+class Direct(Argument):
+    ''' represents a value located in some memory at some address '''
+    def __init__(self, memory, address, data_type):
+        self.memory = memory
+        self.address = address
+        self.data_type = data_type
+
+    def read(self):
+        ''' read the value from the memory '''
+        return self.memory.read(self.address, self.data_type)
+
+    def write(self, value):
+        ''' write a value into the memory '''
+        self.memory.write(self.address, value, self.data_type)
+
+class Indirect(Argument):
+    ''' represents a value located in some memory location specificed by some value in memory '''
+    def __init__(self, memory, address, data_type):
+        # address is the location in memory of the address of the value
+        self.memory = memory
+        self.address = address
+        self.data_type = data_type
+
+    def read(self):
+        ''' read the value in memory indicated by the value in memory '''
+        address = self.memory.read(self.address, DataType.WORD)
+        return self.memory.read(address, self.data_type)
+
+    def write(self, value):
+        ''' write a value to the address in memory specified at the address in memory '''
+        address = self.memory.read(self.address, DataType.WORD)
+        return self.memory.write(address, value, self.data_type)
