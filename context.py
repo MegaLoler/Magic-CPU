@@ -1,3 +1,5 @@
+from data_type import *
+
 class ExecutionContext:
     ''' a context for the cpu to keep track of where it is executing in some program memory
 
@@ -30,6 +32,18 @@ class ExecutionContext:
         self.jump(post_address)
         return value
 
-    def read_instruction(self):
-        ''' read the bytecode representation of an instruction and return the instruction object '''
-        # TODO
+    def fetch_byte(self):
+        ''' fetch a byte from program memory '''
+        return self.fetch(ByteInterface)
+
+    def fetch_word(self):
+        ''' fetch a word from program memory '''
+        return self.fetch(WordInterface)
+
+    def fetch_string(self):
+        ''' fetch a string from program memory '''
+        return self.fetch(StringInterface)
+
+    def fetch_instruction(self):
+        ''' fetch a instruction from program memory '''
+        return self.fetch(InstructionInterface)

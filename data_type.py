@@ -107,3 +107,6 @@ class StringInterface(DataTypeInterface):
             offset += 1
         # finally, return how many bytes were written
         return offset
+
+class InstructionInterface(DataTypeInterface):
+    ''' represents an interface for reading and writing instruction encodings '''

@@ -34,14 +34,15 @@ class Literal(Argument):
         return self.value
 
 class Immediate(Literal):
-    ''' represents an immediate value as an argument '''
-    def __init__(self, context, data_type):
-        # fetch the value from the execution context, program memory
-        self.value = context.fetch(data_type)
+    ''' represents an immediate value as an argument 
+    
+    same as Literal, in function, just a different name
+    because it represent something slightly different '''
 
 class Direct(Argument):
     ''' represents a value located in some memory at some address '''
     def __init__(self, memory, address, data_type):
+        # address is the location in memory of the value
         self.memory = memory
         self.address = address
         self.data_type = data_type
