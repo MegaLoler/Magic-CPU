@@ -202,6 +202,9 @@ class walker(tatsu.walkers.NodeWalker):
         ''' lookup a label address! '''
         return self.labels[node.string], data_type.word_type
 
+    def walk_Type(self, node):
+        return self.walk(node.type)
+
     def walk_StringType(self, node):
         return data_type.string_type
 

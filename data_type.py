@@ -37,7 +37,7 @@ class ByteInterface(DataTypeInterface):
 
         return the amount of bytes that were written
         '''
-        stream[address] = value
+        stream[address] = value % 2 ** 8
         return 1
 
     def compile(self, value):

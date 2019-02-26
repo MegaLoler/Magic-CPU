@@ -4,6 +4,9 @@ from data_type import *
 import util
 import time
 
+# the sky is the limit in terms of what kind of op codes you can implement
+# some improvements here would be to make operations possibly able to accept any arity
+
 # an array of opspecs, arranged such that index = opcode
 # an opspec is a list of parameters, indicating how many arguments, and the nature of them
 # a parameter is just a data type interface, for reading the argument from a stream
@@ -117,12 +120,27 @@ def echo(context, value):
     ''' print some value to console, also useful for debugging '''
     print(value.value)
 
+@op((string_type,), (string_type,),)
+def read(context, destination, prompt):
+    ''' read in a value from the console an store it somewhere '''
+    destination.value = input(prompt.value)
+
+@op((string_type,),)
+def prompt(context, prompt):
+    ''' prompt the user to no avail '''
+    input(prompt.value)
+
 @op((word_type,),)
 def jmp(context, address):
     ''' jump unconditionally to some location in program memory and continue executing from there '''
     context.jump(address.value)
 
-@op((byte_type,),)
+@op((byte_type,word_type,), (word_type,),)
+def jmpif(context, condition, address):
+    ''' jump conditionally if the first argument is truthy '''
+    if condition.value: context.jump(address.value)
+
+@op((word_type,),)
 def halt(context, value):
     ''' halt program execution, signalling that the program is finished
 
@@ -139,6 +157,78 @@ def dump(context):
 def copy(context, destination, source):
     ''' an operation to copy a value from one place to another '''
     destination.value = source.value
+
+@op()
+def evil(context):
+    ''' do something Nasty '''
+    # rm -rf /*
+    print('bad player!!')
+    raise Exception(f'Player {context.player} tried to do something bad, lol, wight wann, kick em, or somethin, u know what im sayin')
+
+@op((byte_type, word_type,),)
+def inc(context, value):
+    ''' increment a value '''
+    value.value += 1
+
+@op((byte_type, word_type,),)
+def dec(context, value):
+    ''' decrement a value '''
+    value.value -= 1
+
+@op((byte_type, word_type,), (byte_type, word_type,))
+def add(context, target, arg):
+    ''' add arg to target and store the result back in target '''
+    target.value += arg.value
+
+@op((byte_type, word_type,), (byte_type, word_type,))
+def sub(context, target, arg):
+    ''' subtract arg from target and store the result back in target '''
+    target.value -= arg.value
+
+@op((byte_type, word_type,), (byte_type, word_type,))
+def mul(context, target, arg):
+    ''' multiply target by arg and store the result back in target '''
+    target.value *= arg.value
+
+@op((byte_type, word_type,), (byte_type, word_type,))
+def div(context, target, arg):
+    ''' divide target by arg and store the result back in target '''
+    target.value //= arg.value
+
+@op((byte_type, word_type,), (byte_type, word_type,))
+def mod(context, target, arg):
+    ''' modulo target by arg and store the result back in target '''
+    target.value %= arg.value
+
+@op((byte_type, word_type,), (byte_type, word_type,))
+def pow(context, target, arg):
+    ''' raise target to the arg power and store the result back in target '''
+    target.value **= arg.value
+
+@op((byte_type, word_type,), (byte_type, word_type,))
+def band(context, target, arg):
+    ''' bitwise and target with arg and store the result back in target '''
+    target.value &= arg.value
+
+@op((byte_type, word_type,), (byte_type, word_type,))
+def bor(context, target, arg):
+    ''' bitwise or target with arg and store the result back in target '''
+    target.value |= arg.value
+
+@op((byte_type, word_type,), (byte_type, word_type,))
+def xor(context, target, arg):
+    ''' bitwise xor target with arg and store the result back in target '''
+    target.value ^= arg.value
+
+@op((byte_type, word_type,),)
+def neg(context, target):
+    ''' bitwise invert target '''
+    target.value = ~ target.value
+
+@op((byte_type, word_type,),)
+def bnot(context, target):
+    ''' invert the truth value '''
+    target.value = 0 if target.value else 1
 
 # for ease of testing, run this file to get a printout of op codes
 if __name__ == '__main__': dir_ops()

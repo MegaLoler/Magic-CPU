@@ -20,7 +20,7 @@ comment::Comment = ";" /.*/ "\n" ;
 value = number | string ;
 
 # a number is either a byte or a word
-number = byte | word_value ;
+number = label | word | byte ;
 
 # a byte is a numeral optionally followed by a byte indication
 byte::Byte = numeral:numeral byte_type ;
@@ -35,10 +35,10 @@ word_value = word | label ;
 numeral::Numeral = digits:(/[0-9a-fA-F]+/) base:[/[bodh]/];
 
 # a string is a series of characters enclosed in quotations
-string::String = '"' string:(/[a-zA-Z0-9 \.\!\?]*/) '"' ; # make better l8r
+string::String = '"' string:(/[a-zA-Z0-9 \.\!\?\:\;\<\>\(\)\[\]\{\}\=\+\-\`\~\@\#\$\%\^\&\*\/\_\']*/) '"' ; # make better l8r
 
 # a label is an alphanumeric string
-label::Label = string:(/[a-zA-Z][a-zA-Z0-9]*/) ;
+label::Label = string:(/[a-zA-Z][a-zA-Z0-9]+/) ;
 
 # a label definition is a label followed by a colon
 label_definition::LabelDefinition = label:label ":" ;
@@ -59,7 +59,7 @@ immediate::Immediate = value:value ;
 direct::Direct = interface:interface "@" address:word_value type:type ;
 
 # indirect is an optional interface indicator followed by "@@" followed by an address followed by a type
-indirect::Indirect = interface:interface "@@" address:word_value type:type ;
+indirect::Indirect = interface:interface "@@" address:numeral type:type ;
 
 # an interface is either program , player , or omni
 interface = program | player | omni ;
@@ -68,7 +68,7 @@ player::Player = [ "r" ] ;
 omni::Omni = "o" ;
 
 # a type is a byte type, word type, or string type
-type = byte_type | word_type | string_type ;
-byte_type::ByteType = "%8" ;
+type::Type = type:( byte_type | word_type | string_type ) ;
+byte_type::ByteType = ["%8"] ;
 word_type::WordType = "%16" ;
 string_type::StringType = "%s" ;
