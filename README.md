@@ -4,18 +4,6 @@ Here is an example of a fantasy "CPU". It can have whatever functionality you wa
 
 There is a `run.py` script for testing out real programs on the CPU! This is just for demonstration purposes. Of course, in the actual game itself, you will be able to execute code provided by the players within the game itself.
 
-## Files
-
-`cpu.py` contains the `CPU` class which represents the fantasy "CPU" itself. All of the CPU's operations are defined per opcode. In order to use a CPU, first instantiate it with the game instance (so that it is able to access the game's omni-present ram, provide an execution context (see below) containing information about the program to be executed as well as who is executing it, and then call the `step` method in order to step through the actual execution of the program.
-
-`context.py` contains an `ExecutionContext` class. When a player wants to run a program using a "CPU", you can create an execution context to hold the memory that holds the program to be run (program memory) as well as a reference to the player running the program, which enables the "CPU" to access the player's local ram.
-
-`player.py` contains a dummy `Player` class containing player-local ram. You don't need to use this class in the actual game, it's just for demonstrating how you can make your own Player class have its own ram.
-
-`game.py` contains a dummy `Game` class containing "omni-present" ram for an instance of a game. You also don't need to use this class in the actual game, it's just for demonstrating omni-present ram.
-
-`run.py` is a script for testing programs in a dummy game environment (see below).
-
 # Examples
 
 See the `bin` directory for a collection of pre-compiled programs that you can execute on the CPU!
@@ -24,3 +12,10 @@ In order to run one of the examples in a fake game environment for testing purpo
 ```bash
 python run.py bin/test.bin
 ```
+
+Alternatively, you can write and compile your own binaries with the included `assembler.py` script like this:
+```bash
+python assembler.py asm/hello_world.asm bin/hello_world.bin
+```
+
+(You'll need to make sure you have the `tatsu` module installed in order to use the assembler.)
