@@ -1,9 +1,10 @@
+from memory import RAM
 from context import ExecutionContext
 
 class Player:
     ''' this is mainly just a dummy player class to demonstrate players having their own ram '''
     def __init__(self):
-        self.ram = bytes(2**10) # 1kb of ram, of course it can be however much you like!
+        self.ram = RAM(bytearray(2**10)) # 1kb of ram, of course it can be however much you like!
 
     def run_program(self, program_memory, cpu, game):
         ''' make this player run a program using some cpu '''

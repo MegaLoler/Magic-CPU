@@ -130,5 +130,15 @@ def halt(context, value):
     '''
     context.halt(value.value)
 
+@op()
+def dump(context):
+    ''' a debug function to dump the contexts of the players ram '''
+    print(context.player.ram.contents)
+
+@op((ByteInterface, WordInterface, StringInterface,), (ByteInterface, WordInterface, StringInterface,),)
+def copy(context, destination, source):
+    ''' an operation to copy a value from one place to another '''
+    destination.value = source.value
+
 # for ease of testing, run this file to get a printout of op codes
 if __name__ == '__main__': dir_ops()

@@ -69,10 +69,10 @@ class Indirect(Argument):
 
     def read(self):
         ''' read the value in memory indicated by the value in memory '''
-        address = self.memory.read(self.context, self.address, WordInterface())
+        address = self.memory.read(self.context, self.address, WordInterface())[0]
         return self.memory.read(self.context, address, self.data_type)[0]
 
     def write(self, value):
         ''' write a value to the address in memory specified at the address in memory '''
-        address = self.memory.read(self.context, self.address, WordInterface())
+        address = self.memory.read(self.context, self.address, WordInterface())[0]
         self.memory.write(self.context, address, value, self.data_type)
