@@ -11,7 +11,7 @@ class CPU:
         give it an execution context with the memory containing the program to run
         '''
         # the first thing is to read in an instruction from the bytestream
-        # TODO
+        instruction = context.read_instruction()
         # the second thing to do is to execute that instruction
         return instruction.execute(context)
 

@@ -29,3 +29,7 @@ class ExecutionContext:
         value, post_address = self.memory.read(self.pointer, data_type)
         self.jump(post_address)
         return value
+
+    def read_instruction(self):
+        ''' read the bytecode representation of an instruction and return the instruction object '''
+        # TODO

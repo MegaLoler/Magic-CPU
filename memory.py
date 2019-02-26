@@ -38,17 +38,15 @@ class ROM(PhysicalMemory):
     ''' represents a read only physical memory '''
     def read(self, address, data_type):
         ''' read from the physical memory '''
-        # TODO: data type
-        post_address = address # TODO increment
-        return self.contents[address], post_address
+        value, length = data_type.read(self.contents, address)
+        return value, address + length
 
 class RAM(ROM):
     ''' represents linear random access memory '''
     def write(self, address, value, data_type):
         ''' write a value to a location in this RAM '''
-        # TODO: data type
-        self.contents[address] = value
-        return address # TODO increment
+        length = data_type.write(self.contents, address, value)
+        return address + length
 
 class FileMemory(ROM):
     ''' represents readonly access to the contents of a file '''
