@@ -90,5 +90,14 @@ echo @0%8
 ;echo @o0%s
 
 
+
+
+;;; use the cow opcode
+prompt "are u ready to get cow'd up in here?"
+cow
+; check it out ; )
+dump
+
+
 ; exit with a random value
 halt 78

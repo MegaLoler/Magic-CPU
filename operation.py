@@ -230,5 +230,14 @@ def bnot(context, target):
     ''' invert the truth value '''
     target.value = 0 if target.value else 1
 
+@op()
+def cow(context):
+    ''' copies moo into random places in player's memory lol '''
+    import random
+    for x in range(1000):
+        # pick a random address
+        address = random.randint(0, context.player.ram.length - 1)
+        context.player.ram.write(context, address, 'moo', string_type)
+
 # for ease of testing, run this file to get a printout of op codes
 if __name__ == '__main__': dir_ops()

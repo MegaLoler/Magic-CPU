@@ -5,6 +5,8 @@ from abc import *
 # and data to encoded are encoded with these intrefcase using the write method
 # there is an interface for each primitive data type
 
+# TODO: fix it so theres no danger of going out of bounds.... nicer than this
+
 class DataTypeInterface(ABC):
     ''' represents a data type interface, with a bytestream reader and writer '''
     @abstractmethod
@@ -54,7 +56,7 @@ class WordInterface(DataTypeInterface):
         # grab the low and high bytes separately
         # assuming low-endian byte order for now
         low_byte = stream[address]
-        high_byte = stream[address + 1]
+        high_byte = stream[(address + 1) % len(stream)]
         # assemble the 16 bit value from the two parts
         value = low_byte + high_byte * 2 ** 8
         return value, 2
@@ -70,7 +72,7 @@ class WordInterface(DataTypeInterface):
         high_byte = value // 2 ** 8
         # and set both of those individual bytes in the stream
         stream[address] = low_byte
-        stream[address + 1] = high_byte
+        stream[(address + 1) % len(stream)] = high_byte
         return 2
 
     def compile(self, value):
@@ -94,7 +96,7 @@ class StringInterface(DataTypeInterface):
         # loop through the bytestream until encountering the null terminator (a 0)
         while True:
             # read the next byte
-            byte = stream[address + offset]
+            byte = stream[(address + offset) % len(stream)]
             # keep track of the offset
             offset += 1
             # if its not a null terminator (0) then append it to the collected string value
@@ -120,7 +122,7 @@ class StringInterface(DataTypeInterface):
         # loop through each byte in the byte string
         for byte in data:
             # write it into memory
-            stream[address + offset] = byte
+            stream[(address + offset) % len(stream)] = byte
             # keep track of how many bytes have been written
             offset += 1
         # finally, return how many bytes were written
