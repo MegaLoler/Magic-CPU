@@ -40,6 +40,9 @@ class Immediate(Literal):
     
     same as Literal, in function, just a different name
     because it represent something slightly different '''
+    def __init__(self, value, data_type):
+        super().__init__(value)
+        self.data_type = data_type
 
 class Direct(Argument):
     ''' represents a value located in some memory at some address '''

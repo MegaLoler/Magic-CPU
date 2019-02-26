@@ -40,6 +40,10 @@ class ByteInterface(DataTypeInterface):
         stream[address] = value
         return 1
 
+    def compile(self, value):
+        ''' compile a byte value into a bytecode representation '''
+        return bytes([value])
+
 class WordInterface(DataTypeInterface):
     ''' represents the interface to a 16-bit quantity '''
     def read(self, context, stream, address):
@@ -68,6 +72,14 @@ class WordInterface(DataTypeInterface):
         stream[address] = low_byte
         stream[address + 1] = high_byte
         return 2
+
+    def compile(self, value):
+        ''' compile a word value into a bytecode representation '''
+        # that means separate out the high and low bytes
+        high_byte = value // 2 ** 8
+        low_byte = value % 2 ** 8
+        # remember, little-endian, so low byte first
+        return bytes([low_byte, high_byte])
 
 class StringInterface(DataTypeInterface):
     ''' represents a null terminate ascii encoded string '''
@@ -114,6 +126,11 @@ class StringInterface(DataTypeInterface):
         # finally, return how many bytes were written
         return offset
 
+    def compile(self, value):
+        ''' complie a string value into a bytecode representation '''
+        # encode it as ascii and add a null terminator
+        return value.encode('ascii') + bytes([0])
+
 class OpcodeInterface(DataTypeInterface):
     ''' an interface for encoding and decoding opcode byte values '''
     def read(self, context, stream, address):
@@ -146,6 +163,15 @@ class OpcodeInterface(DataTypeInterface):
         # TODO
         pass
 
+    def compile(self, value):
+        ''' compile an opcode value as bytecode '''
+        bytecode = bytes()
+        while value >= 0xff:
+            bytecode += bytes([0xff])
+            value -= 0xff
+        bytecode += bytes([value])
+        return bytecode
+
 class ImmediateInterface(DataTypeInterface):
     ''' interface for encoding and decoding immediate argument values from bytecode streams '''
     def __init__(self, data_type):
@@ -157,7 +183,7 @@ class ImmediateInterface(DataTypeInterface):
         # use the data type interface of this immedate value, to read it
         value, offset = self.data_type.read(context, stream, address)
         # create an argument from this value
-        argument = Immediate(value)
+        argument = Immediate(value, self.data_type)
         # return the argument and the offset
         return argument, offset
 
@@ -244,3 +270,8 @@ class InstructionInterface(DataTypeInterface):
     def write(self, context, stream, address, value):
         # TODO
         pass
+
+# primitive type singletons
+byte_type = ByteInterface()
+word_type = WordInterface()
+string_type = StringInterface()

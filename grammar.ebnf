@@ -2,13 +2,19 @@
 
 @@grammar :: MagicAssembly
 
+@@whitespace :: /[ \t]+/
+
 start = code $ ;
 
 # code is a list of objects
 code::Code = objects:{object}* $ ;
 
-# an object is a value a label definition or an instruction
-object = value | label_definition | instruction ;
+# an object is a label definition or an instruction or a comment to be ignored
+# followed by any whitespace
+object = object:( instruction | label_definition | comment ) /\s*/ ;
+
+# a comment starts with a semicolon and ends with a newline
+comment::Comment = ";" /.*/ "\n" ;
 
 # a value is either a number or a string
 value = number | string ;
@@ -17,28 +23,28 @@ value = number | string ;
 number = byte | word_value ;
 
 # a byte is a numeral optionally followed by a byte indication
-byte::Byte = numeral [ byte_type ] ;
+byte::Byte = numeral:numeral byte_type ;
 
 # a word is a numeral optionally followed by a word indication
-word::Word = numeral [ word_type ] ;
+word::Word = numeral:numeral [ word_type ] ;
 
 # a word value is either a word or a label
 word_value = word | label ;
 
 # a numeral is a series of digits optionally followed by a base indicator
-numeral = digits:(/[0-9]+/) base:[/[bodh]/];
+numeral::Numeral = digits:(/[0-9a-fA-F]+/) base:[/[bodh]/];
 
 # a string is a series of characters enclosed in quotations
-string::String = '"' string:(/[a-zA-Z0-9]*/) '"' ; # make better l8r
+string::String = '"' string:(/[a-zA-Z0-9 \.\!\?]*/) '"' ; # make better l8r
 
 # a label is an alphanumeric string
-label::Label = string:(/[a-zA-Z0-9]+/) ;
+label::Label = string:(/[a-zA-Z][a-zA-Z0-9]*/) ;
 
 # a label definition is a label followed by a colon
-label_definition::LabelDefinition = label ":" ;
+label_definition::LabelDefinition = label:label ":" ;
 
 # an instruction is a mnemonic optionally followed by some arguments followed by a newline
-instruction::Instruction = mnemonic:mnemonic arguments:{argument}* "\n" ;
+instruction::Instruction = mnemonic:mnemonic arguments:","%{argument}* "\n" ;
 
 # a mnemonic is an alphabetic string
 mnemonic = /[a-zA-Z]+/ ;

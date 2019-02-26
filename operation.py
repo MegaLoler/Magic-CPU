@@ -67,7 +67,7 @@ def generate_opspecs(operation, parameter_type_spec):
             opspec = list()
             type_spec, target_spec = pair
             for i in range(len(type_spec)):
-                data_type = type_spec[i]()
+                data_type = type_spec[i]
                 target = target_spec[i]
                 opspec.append(target(data_type))
             # register the opspec
@@ -107,22 +107,22 @@ def nop(context):
     ''' this op does nothing '''
     pass
 
-@op((ByteInterface, WordInterface,),)
+@op((byte_type, word_type,),)
 def wait(context, duration):
     ''' wait some amount of seconds before continuing program execution, useful for debugging '''
     time.sleep(duration.value)
 
-@op((ByteInterface, WordInterface, StringInterface,),)
+@op((byte_type, word_type, string_type,),)
 def echo(context, value):
     ''' print some value to console, also useful for debugging '''
     print(value.value)
 
-@op((WordInterface,),)
+@op((word_type,),)
 def jmp(context, address):
     ''' jump unconditionally to some location in program memory and continue executing from there '''
     context.jump(address.value)
 
-@op((ByteInterface,),)
+@op((byte_type,),)
 def halt(context, value):
     ''' halt program execution, signalling that the program is finished
 
@@ -135,7 +135,7 @@ def dump(context):
     ''' a debug function to dump the contexts of the players ram '''
     print(context.player.ram.contents)
 
-@op((ByteInterface, WordInterface, StringInterface,), (ByteInterface, WordInterface, StringInterface,),)
+@op((byte_type, word_type, string_type,), (byte_type, word_type, string_type,),)
 def copy(context, destination, source):
     ''' an operation to copy a value from one place to another '''
     destination.value = source.value
