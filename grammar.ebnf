@@ -56,13 +56,14 @@ argument = immediate | direct | indirect ;
 immediate::Immediate = value:value ;
 
 # a direct is an optional interface indicator followed by "@" followed by an address followed by a type
-direct::Direct = interface:interface "@" address:numeral type:type ;
+direct::Direct = "@" interface:interface address:numeral type:type ;
 
 # indirect is an optional interface indicator followed by "@@" followed by an address followed by a type
-indirect::Indirect = interface:interface "@@" address:numeral type:type ;
+indirect::Indirect = "@@" interface:interface address:numeral type:type ;
 
 # an interface is either program , player , or omni
-interface = program | player | omni ;
+# ugh how to debug this and make it work
+interface = player | omni | program;
 program::Program = "p" ;
 player::Player = [ "r" ] ;
 omni::Omni = "o" ;

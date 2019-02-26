@@ -81,5 +81,14 @@ neg @0%8
 echo @0%8
 
 
+
+
+;;; OMNI RAM
+; need to fix the grammar for it to work lol
+;move @o0%s, "string for omni ram!"
+; tht string is now in OMNI ram rather than local player ram
+;echo @o0%s
+
+
 ; exit with a random value
 halt 78
