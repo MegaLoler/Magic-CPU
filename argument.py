@@ -27,10 +27,10 @@ class Argument(ABC):
 class Literal(Argument):
     ''' represents a literal value as an argument '''
     def __init__(self, value):
-        self.value = value
+        self.v = value
 
     def read(self):
-        return self.value
+        return self.v
 
     def write(self, value):
         pass # you can't write "to" a literal value lol

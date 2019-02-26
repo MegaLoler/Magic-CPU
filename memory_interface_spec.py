@@ -1,4 +1,6 @@
-from abc import ABC
+from abc import *
+
+# i wonder if this whole thing shouldn't be rewritten as just functions and not bother with classes
 
 class MemoryInterfaceSpec(ABC):
     ''' represents a designator the different possible memory interfaces '''
@@ -24,3 +26,11 @@ class OmniRAMSpec(MemoryInterfaceSpec):
     def resolve(self, context):
         ''' return the game instance's omni ram '''
         return context.game.ram
+
+# singletons
+program_memory_spec = ProgramMemorySpec()
+player_ram_spec = PlayerRAMSpec()
+omni_ram_spec = OmniRAMSpec()
+
+# tuple
+memory_interface_specs = program_memory_spec, player_ram_spec, omni_ram_spec

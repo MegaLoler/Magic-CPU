@@ -2,5 +2,5 @@
 
 ; programs always start executing from the beginning of program memory
 ; therefore, the entry point is right here:
-; use the print op to print the immediate value
-print "hello world!"
+; use the echo op to print the immediate value
+echo "hello world!"

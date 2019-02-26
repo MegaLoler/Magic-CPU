@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import sys
+import operation # importing to prevent weird import order issues?
 from game import Game
 from player import Player
 from cpu import CPU

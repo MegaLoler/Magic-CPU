@@ -10,7 +10,7 @@ class CPU:
         give it an execution context with the memory containing the program to run
         '''
         # the first thing is to read in an instruction from the bytestream
-        instruction = context.read_instruction()
+        instruction = context.fetch_instruction()
         # the second thing to do is to execute that instruction
         return instruction.execute(context)
 
@@ -19,5 +19,5 @@ class CPU:
         # continuously step through the program until halted
         while not context.halted:
             self.step(context)
-        # and then return the temporary register as the programs "return value"
-        return context.register
+        # return whatever value is stored in the return register
+        return context.return_register

@@ -41,6 +41,10 @@ class ROM(PhysicalMemory):
         value, length = data_type.read(context, self.contents, address)
         return value, address + length
 
+    def write(self, context, address, value, data_type):
+        ''' can't write to rom! '''
+        pass
+
 class RAM(ROM):
     ''' represents linear random access memory '''
     def write(self, context, address, value, data_type):

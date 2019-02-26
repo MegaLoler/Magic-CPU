@@ -21,6 +21,13 @@ class ExecutionContext:
         # when a program is finished and wants to exit, it will use the halt operation
         # which will then set this to True
         self.halted = False
+        # this "return register" holds a value to return when the program is finished
+        self.return_register = None
+
+    def halt(self, value=None):
+        ''' set the execution to halt with some return value '''
+        self.halted = True
+        self.return_register = value
 
     def jump(self, address):
         ''' set the pointer, wrapping it around if needed '''
@@ -34,16 +41,16 @@ class ExecutionContext:
 
     def fetch_byte(self):
         ''' fetch a byte from program memory '''
-        return self.fetch(ByteInterface)
+        return self.fetch(ByteInterface())
 
     def fetch_word(self):
         ''' fetch a word from program memory '''
-        return self.fetch(WordInterface)
+        return self.fetch(WordInterface())
 
     def fetch_string(self):
         ''' fetch a string from program memory '''
-        return self.fetch(StringInterface)
+        return self.fetch(StringInterface())
 
     def fetch_instruction(self):
         ''' fetch a instruction from program memory '''
-        return self.fetch(InstructionInterface)
+        return self.fetch(InstructionInterface())
