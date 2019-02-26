@@ -11,14 +11,14 @@ echo "hello world!"
 ;;; LOOP
 ; now count down from 20!
 ; copy the value 100 into player ram location 0 as an 8 bit value
-copy @0%8, 20
+copy @0, 20
 loop:
 ; and print the current value
-echo @0%8
+echo @0
 ; and then decrement the value at location 0
-dec @0%8
+dec @0
 ; and then keep looping if its not 0
-jmpif @0%8, loop
+jmpif @0, loop
 
 
 

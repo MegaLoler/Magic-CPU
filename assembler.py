@@ -181,12 +181,12 @@ class walker(tatsu.walkers.NodeWalker):
 
     def walk_Direct(self, node):
         ''' read an direct argument '''
-        address = self.walk(node.address.numeral)
+        address = self.walk(node.address)
         return data_type.word_type.compile(address)
 
     def walk_Indirect(self, node):
         ''' read an direct argument '''
-        address = self.walk(node.address.numeral)
+        address = self.walk(node.address)
         return data_type.word_type.compile(address)
 
     def walk_Program(self, node):

@@ -23,10 +23,10 @@ value = number | string ;
 number = label | word | byte ;
 
 # a byte is a numeral optionally followed by a byte indication
-byte::Byte = numeral:numeral byte_type ;
+byte::Byte = numeral:numeral "%8" ;
 
 # a word is a numeral optionally followed by a word indication
-word::Word = numeral:numeral [ word_type ] ;
+word::Word = numeral:numeral [ "%16" ] ;
 
 # a word value is either a word or a label
 word_value = word | label ;
@@ -56,7 +56,7 @@ argument = immediate | direct | indirect ;
 immediate::Immediate = value:value ;
 
 # a direct is an optional interface indicator followed by "@" followed by an address followed by a type
-direct::Direct = interface:interface "@" address:word_value type:type ;
+direct::Direct = interface:interface "@" address:numeral type:type ;
 
 # indirect is an optional interface indicator followed by "@@" followed by an address followed by a type
 indirect::Indirect = interface:interface "@@" address:numeral type:type ;
@@ -68,7 +68,7 @@ player::Player = [ "r" ] ;
 omni::Omni = "o" ;
 
 # a type is a byte type, word type, or string type
-type::Type = type:( byte_type | word_type | string_type ) ;
+type::Type = type:( string_type | word_type | byte_type) ;
 byte_type::ByteType = ["%8"] ;
 word_type::WordType = "%16" ;
 string_type::StringType = "%s" ;
