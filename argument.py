@@ -1,6 +1,5 @@
-from enum import Enum
-from abc import ABC
-from data_type import DataType
+from abc import *
+from data_type import *
 
 class Argument(ABC):
     ''' represents an argument to an instruction
@@ -33,6 +32,9 @@ class Literal(Argument):
     def read(self):
         return self.value
 
+    def write(self, value):
+        pass # you can't write "to" a literal value lol
+
 class Immediate(Literal):
     ''' represents an immediate value as an argument 
     
@@ -41,34 +43,36 @@ class Immediate(Literal):
 
 class Direct(Argument):
     ''' represents a value located in some memory at some address '''
-    def __init__(self, memory, address, data_type):
+    def __init__(self, context, memory, address, data_type):
         # address is the location in memory of the value
+        self.context = context
         self.memory = memory
         self.address = address
         self.data_type = data_type
 
     def read(self):
         ''' read the value from the memory '''
-        return self.memory.read(self.address, self.data_type)[0]
+        return self.memory.read(self.context, self.address, self.data_type)[0]
 
     def write(self, value):
         ''' write a value into the memory '''
-        self.memory.write(self.address, value, self.data_type)
+        self.memory.write(self.context, self.address, value, self.data_type)
 
 class Indirect(Argument):
     ''' represents a value located in some memory location specificed by some value in memory '''
-    def __init__(self, memory, address, data_type):
+    def __init__(self, context, memory, address, data_type):
         # address is the location in memory of the address of the value
+        self.context = context
         self.memory = memory
         self.address = address
         self.data_type = data_type
 
     def read(self):
         ''' read the value in memory indicated by the value in memory '''
-        address = self.memory.read(self.address, DataType.WORD)
-        return self.memory.read(address, self.data_type)[0]
+        address = self.memory.read(self.context, self.address, WordInterface())
+        return self.memory.read(self.context, address, self.data_type)[0]
 
     def write(self, value):
         ''' write a value to the address in memory specified at the address in memory '''
-        address = self.memory.read(self.address, DataType.WORD)
-        self.memory.write(address, value, self.data_type)
+        address = self.memory.read(self.context, self.address, WordInterface())
+        self.memory.write(self.context, address, value, self.data_type)

@@ -28,7 +28,7 @@ class ExecutionContext:
 
     def fetch(self, data_type):
         ''' fetch a value from program memory '''
-        value, post_address = self.memory.read(self.pointer, data_type)
+        value, post_address = self.memory.read(self, self.pointer, data_type)
         self.jump(post_address)
         return value
 

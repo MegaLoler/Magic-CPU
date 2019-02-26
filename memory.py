@@ -1,16 +1,16 @@
-from abc import ABC
+from abc import *
 
 class MemoryInterface(ABC):
     ''' represents a memory interface from which you can read and to which you can write '''
     @abstractmethod
-    def read(self, address, data_type):
+    def read(self, context, address, data_type):
         ''' read a value from this memory interface given some address to read from
         
         return the value itself as well as the address of the first byte after the read value'''
         ...
 
     @abstractmethod
-    def write(self, address, value, data_type):
+    def write(self, context, address, value, data_type):
         ''' write a value to some address using this memory interface
 
         return the address the first byte after the written value
@@ -36,16 +36,16 @@ class PhysicalMemory(MemoryInterface):
 
 class ROM(PhysicalMemory):
     ''' represents a read only physical memory '''
-    def read(self, address, data_type):
+    def read(self, context, address, data_type):
         ''' read from the physical memory '''
-        value, length = data_type.read(self.contents, address)
+        value, length = data_type.read(context, self.contents, address)
         return value, address + length
 
 class RAM(ROM):
     ''' represents linear random access memory '''
-    def write(self, address, value, data_type):
+    def write(self, context, address, value, data_type):
         ''' write a value to a location in this RAM '''
-        length = data_type.write(self.contents, address, value)
+        length = data_type.write(context, self.contents, address, value)
         return address + length
 
 class FileMemory(ROM):

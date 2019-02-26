@@ -1,9 +1,16 @@
+from operation import opspecs, opcodes
+from argument import *
 from abc import ABC
+
+# these are reader/writer interfaces for bytecode
+# items encoded in the bytecode format are decoded with these interfaces using the read method
+# and data to encoded are encoded with these intrefcase using the write method
+# there is an interface for each primitive data type
 
 class DataTypeInterface(ABC):
     ''' represents a data type interface, with a bytestream reader and writer '''
     @abstractmethod
-    def read(self, stream, address):
+    def read(self, context, stream, address):
         ''' read a piece of data from a bytestream at address
 
         return the read data as well as the amount of bytes that were read
@@ -11,7 +18,7 @@ class DataTypeInterface(ABC):
         ...
 
     @abstractmethod
-    def write(self, stream, address, value):
+    def write(self, context, stream, address, value):
         ''' write a piece of data into a bytestream at address
 
         return the amount of bytes that was written
@@ -20,14 +27,14 @@ class DataTypeInterface(ABC):
 
 class ByteInterface(DataTypeInterface):
     ''' represents the interface to an 8-bit quantity '''
-    def read(self, stream, address):
+    def read(self, context, stream, address):
         ''' read in a byte of data from a bytestream at address
 
         return the byte as well as the amount of bytes that were read
         '''
         return stream[address], 1
 
-    def write(self, stream, address, value):
+    def write(self, context, stream, address, value):
         ''' write a byte into a bytestream at some address
 
         return the amount of bytes that were written
@@ -37,7 +44,7 @@ class ByteInterface(DataTypeInterface):
 
 class WordInterface(DataTypeInterface):
     ''' represents the interface to a 16-bit quantity '''
-    def read(self, stream, address):
+    def read(self, context, stream, address):
         ''' read in a 16-bit word of data from a bytestream at address
 
         return the value as well as the amount of bytes that were read
@@ -50,7 +57,7 @@ class WordInterface(DataTypeInterface):
         value = low_byte + high_byte * 2 ** 8
         return value, 2
 
-    def write(self, stream, address, value):
+    def write(self, context, stream, address, value):
         ''' write a 16-bit word into a bytestream at some address
 
         return the amount of bytes that were written
@@ -66,7 +73,7 @@ class WordInterface(DataTypeInterface):
 
 class StringInterface(DataTypeInterface):
     ''' represents a null terminate ascii encoded string '''
-    def read(self, stream, address):
+    def read(self, context, stream, address):
         ''' read a null terminated string from a byte stream at an address
 
         return the string as well as the amount of bytes that were read
@@ -87,10 +94,11 @@ class StringInterface(DataTypeInterface):
         # return the string as well as the amount of bytes that were read
         return string, offset
 
-    def write(self, stream, address, value):
+    def write(self, context, stream, address, value):
         ''' write a null terminated string into the byte stream 
 
-        return the amount of of bytes that were written '''
+        return the amount of of bytes that were written
+        '''
         # make sure this value is a string
         string = str(value)
         # and then get a bytestring of it
@@ -108,5 +116,103 @@ class StringInterface(DataTypeInterface):
         # finally, return how many bytes were written
         return offset
 
+class OpcodeInferface(DataTypeInterface):
+    ''' an interface for encoding and decoding opcode byte values '''
+    def read(self, context, stream, address):
+        ''' decode an opcode from a stream
+
+        bytecode format is just a number
+        but if that numer is 0xff, then read the next byte and add 255
+        the second byte can also be 0xff, meaning read the third byte and add 255 again
+        and so on
+        '''
+        # keep track of how much data has been read
+        offset = 0
+        # store the opcode value
+        opcode = 0
+        # read until its not 0xff
+        while True:
+            # read the next byte
+            byte = stream[address + offset]
+            # keep track
+            offset += 1
+            # add the value
+            opcode += byte
+            # if it's 0xff, than means go to the next page of possible opcode values
+            # otherwise we're done
+            if byte != 0xff: break
+        # return the opcode value and the amount of bytes read
+        return opcode, offset
+
+class ImmediateInterface(DataTypeInterface):
+    ''' interface for encoding and decoding immediate argument values from bytecode streams '''
+    def __init__(self, data_type):
+        self.data_type = data_type
+
+    def read(self, context, stream, address):
+        ''' read an immediate argument '''
+        # use the data type interface of this immedate value, to read it
+        value, offset = self.data_type.read(context, stream, address)
+        # create an argument from this value
+        argument = Immediate(value)
+        # return the argument and the offset
+        return argument, offset
+
+class DirectInterface(DataTypeInterface):
+    ''' interface for encoding and decoding direct address argument values from bytecode streams '''
+    def __init__(self, memory_spec, data_type):
+        self.memory_spec = memory_spec
+        self.data_type = data_type
+
+    def read(self, context, stream, address):
+        ''' read a direct address argument '''
+        # read the address value (addresses are assumed to be 16 bit, so we use the word interface)
+        address, offset = WordInterface().read(context, stream, address)
+        # create an argument from this address value
+        argument = Direct(context, self.memory_spec.resolve(context), address, data_type)
+        # return the argument and the offset
+        return argument, offset
+
+# note: should probabably generalize this and the above, its much duplicate
+class IndirectInterface(DataTypeInterface):
+    ''' interface for encoding and decoding indirect address argument values from bytecode streams '''
+    def __init__(self, memory_spec, data_type):
+        self.memory_spec = memory_spec
+        self.data_type = data_type
+
+    def read(self, context, stream, address):
+        ''' read an indirect address argument '''
+        # read the address value (addresses are assumed to be 16 bit, so we use the word interface)
+        address, offset = WordInterface().read(context, stream, address)
+        # create an argument from this address value
+        argument = Indirect(context, self.memory_spec.resolve(context), address, data_type)
+        # return the argument and the offset
+        return argument, offset
+
 class InstructionInterface(DataTypeInterface):
     ''' represents an interface for reading and writing instruction encodings '''
+    def read(self, context, stream, address):
+        ''' decode an instruction from the bytecode stream '''
+        # read the opcode first!
+        opcode, offset = OpcodeInterface().read(context, stream, address)
+        # look up the opspec for this opcode
+        opspec = opspecs[opcode]
+        # this is a list
+        # each item in the list is a data type interface for reading an argment
+        # so loop through each, and use it to read an argument!
+        # keep track of the arguments read
+        arguments = list()
+        for p in opspec:
+            # read the argument
+            argument, arg_offset = p.read(context, stream, address + offset)
+            # keep track of offset
+            offset += arg_offset
+            # store the argument
+            arguments.append(argument)
+        # construct an instruction from these arguments
+        # first get the operation
+        operation = opcodes[opcode]
+        # then construct the instruction
+        instruction = Instruction(operation, arguments)
+        # and return it and the total offset
+        return instruction, offset
