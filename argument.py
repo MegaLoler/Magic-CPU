@@ -17,13 +17,13 @@ class Argument(ABC):
         ''' write a value to a location represented by this argument at runtime '''
         ...
 
-    def __get__(self):
-        ''' get the value of this argument '''
+    @property
+    def value(self):
         return self.read()
 
-    def __set__(self, value):
-        ''' set the value of this argument '''
-        self.write(self, value)
+    @value.setter
+    def value(self, value):
+        self.write(value)
 
 class Literal(Argument):
     ''' represents a literal value as an argument '''

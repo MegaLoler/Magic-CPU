@@ -1,3 +1,4 @@
+from argument import Literal
 import time
 
 # a global dictionary for looking up operations by mnemonic
@@ -26,11 +27,11 @@ def nop(context):
     pass
 
 @op
-def wait(context, duration=1):
+def wait(context, duration=Literal(1)):
     ''' wait some amount of seconds before continuing program execution, useful for debugging '''
-    time.sleep(duration)
+    time.sleep(duration.value)
 
 @op
 def print(context, value):
     ''' print some value to console, also useful for debugging '''
-    print(value)
+    print(value.value)
