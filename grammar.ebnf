@@ -1,0 +1,68 @@
+# this is the grammar for the assembly language
+
+@@grammar :: MagicAssembly
+
+start = code $ ;
+
+# code is a list of objects
+code::Code = objects:{object}* $ ;
+
+# an object is a value a label definition or an instruction
+object = value | label_definition | instruction ;
+
+# a value is either a number or a string
+value = number | string ;
+
+# a number is either a byte or a word
+number = byte | word_value ;
+
+# a byte is a numeral optionally followed by a byte indication
+byte::Byte = numeral [ byte_type ] ;
+
+# a word is a numeral optionally followed by a word indication
+word::Word = numeral [ word_type ] ;
+
+# a word value is either a word or a label
+word_value = word | label ;
+
+# a numeral is a series of digits optionally followed by a base indicator
+numeral = digits:(/[0-9]+/) base:[/[bodh]/];
+
+# a string is a series of characters enclosed in quotations
+string::String = '"' string:(/[a-zA-Z0-9]*/) '"' ; # make better l8r
+
+# a label is an alphanumeric string
+label::Label = string:(/[a-zA-Z0-9]+/) ;
+
+# a label definition is a label followed by a colon
+label_definition::LabelDefinition = label ":" ;
+
+# an instruction is a mnemonic optionally followed by some arguments followed by a newline
+instruction::Instruction = mnemonic:mnemonic arguments:{argument}* "\n" ;
+
+# a mnemonic is an alphabetic string
+mnemonic = /[a-zA-Z]+/ ;
+
+# an argument is either an immediate , a direct value , or an indirect value
+argument = immediate | direct | indirect ;
+
+# an immediate is a value
+immediate::Immediate = value:value ;
+
+# a direct is an optional interface indicator followed by "@" followed by an address followed by a type
+direct::Direct = interface:interface "@" address:word_value type:type ;
+
+# indirect is an optional interface indicator followed by "@@" followed by an address followed by a type
+indirect::Indirect = interface:interface "@@" address:word_value type:type ;
+
+# an interface is either program , player , or omni
+interface = program | player | omni ;
+program::Program = "p" ;
+player::Player = [ "r" ] ;
+omni::Omni = "o" ;
+
+# a type is a byte type, word type, or string type
+type = byte_type | word_type | string_type ;
+byte_type::ByteType = "%8" ;
+word_type::WordType = "%16" ;
+string_type::StringType = "%s" ;
