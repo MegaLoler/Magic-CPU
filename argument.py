@@ -1,20 +1,29 @@
 from enum import Enum
+from abc import ABC
 from data_type import DataType
 
-class Argument:
+class Argument(ABC):
     ''' represents an argument to an instruction
 
     an instruction argument designates a value to be resolved at the time of executing that instruction
     '''
+    @abstractmethod
     def read(self):
-        ''' read the value that htis argument represents at runtime in an execution context '''
-        pass
-        # abstract
+        ''' read the value that this argument represents at runtime in an execution context '''
+        ...
 
+    @abstractmethod
     def write(self, value):
         ''' write a value to a location represented by this argument at runtime '''
-        pass
-        # abstract
+        ...
+
+    def __get__(self):
+        ''' get the value of this argument '''
+        return self.read()
+
+    def __set__(self, value):
+        ''' set the value of this argument '''
+        self.write(self, value)
 
 class Literal(Argument):
     ''' represents a literal value as an argument '''
@@ -39,7 +48,7 @@ class Direct(Argument):
 
     def read(self):
         ''' read the value from the memory '''
-        return self.memory.read(self.address, self.data_type)
+        return self.memory.read(self.address, self.data_type)[0]
 
     def write(self, value):
         ''' write a value into the memory '''
@@ -56,9 +65,9 @@ class Indirect(Argument):
     def read(self):
         ''' read the value in memory indicated by the value in memory '''
         address = self.memory.read(self.address, DataType.WORD)
-        return self.memory.read(address, self.data_type)
+        return self.memory.read(address, self.data_type)[0]
 
     def write(self, value):
         ''' write a value to the address in memory specified at the address in memory '''
         address = self.memory.read(self.address, DataType.WORD)
-        return self.memory.write(address, value, self.data_type)
+        self.memory.write(address, value, self.data_type)

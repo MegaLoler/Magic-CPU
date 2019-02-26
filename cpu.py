@@ -3,10 +3,6 @@ from operation import ops
 
 class CPU:
     ''' calling it CPU for now, i know it's supposed to actually be different from a real CPU though '''
-    def __init__(self, game):
-        # provide the game instance to the cpu in order for it to access the game's omnipresent ram
-        self.game = game
-
     def step(self, context):
         ''' execute the next instruction
 

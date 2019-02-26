@@ -4,19 +4,19 @@ import sys
 from game import Game
 from player import Player
 from cpu import CPU
+from memory import FileMemory
 
 # this is a script in order to test out precompiled programs in a dummy game environment
 # it's for demonstration and testing purposes
 
 # usage: python run.py program.bin
 
-def run_file(filename, cpu, player):
+def run_file(filename, cpu, player, game):
     ''' run a binary program stored in an external file as a player on some cpu '''
-    with open(filename, 'rb') as f:
-        # load the program from the file
-        program = f.read()
-        # and tell the player to run that program
-        return player.run_program(program, cpu)
+    # load the program memory from the file
+    program_memory = FileMemory(filename)
+    # and make the player run it
+    return player.run_program(program_memory, cpu, game)
 
 def test_run(filename):
     ''' run a program stored in an extern file in a dummy game environment with a dummy player '''
@@ -25,10 +25,9 @@ def test_run(filename):
     # create the dummy player instance
     player = Player()
     # and create the CPU to run the program
-    # cpu needs to know what game instance it belongs to in order to access the game's omni ram
-    cpu = CPU(game)
+    cpu = CPU()
     # and then run the program in the file
-    return run_file(filename, cpu, player)
+    return run_file(filename, cpu, player, game)
 
 if __name__ == '__main__':
     if len(sys.argv) == 2:
