@@ -118,7 +118,7 @@ echo @4%16
 
 The *string* in magic assembly is a *null-terminated sequence of ASCII character values*. This means that the sequence of characters making up the string is encoded into the bytestream as a sequence of bytes corresponding to the ASCII character codes for each character followed by a byte of `0` (the *null-terminator* (sounds cool lol)).
 
-The amount of that a string occupies in memory is always the character count + 1 (1 byte for each character + the null-terminator).
+The amount of space that a string occupies in memory is always the character count + 1 (1 byte for each character + the null-terminator).
 
 For example, the string `Hello` would be encoded into the bytestream as the following sequence of bytes (in hexidecimal): `48 65 6c 6c 6f 00`
 
