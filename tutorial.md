@@ -50,7 +50,7 @@ echo "I am an immediate value!"
 
 A direct argument is an argument whose value is located somewhere else in memory. It is like an *unnamed variable*, that is, a variable addressed by *memory address* rather than name.
 
-A direct argument in magic assembly is written as '@' followed by a number which is the memory address of the value.
+A direct argument in magic assembly is written as `@` followed by a number which is the memory address of the value.
 
 Here is an example of an instruction that increments the number stored at memory location `50` by 1 using the `inc` operation:
 ```asm
@@ -68,7 +68,7 @@ An indirect argument in magic assembly is written as `@@` followed by the number
 
 Here is an example of an instruction that decrements the number stored at memory location `50`, assuming that the value `50` is stored at memory location `10`:
 ```asm
-read: decrement [the value] at [memory location which is stored] at [memory location] 10
+; read: decrement [the value] at [memory location which is stored] at [memory location] 10
 dec @@10
 ```
 
