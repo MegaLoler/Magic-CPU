@@ -173,10 +173,7 @@ echo @o100
 
 **Labels** are a way of marking locations in the program memory. This is useful if you want to **jump** to a portion of code. Once a label is defined, it can be used in the place of any *memory address* or *word literal* in an argument.
 
-A label is defined on its own line by writing the *label name* followed by `:` like this:
-```asm
-[label name]:
-```
+A label is defined on its own line by writing the *label name* followed by `:` like this: `[label name]:`
 For example, this is how you would define a label called `sup`:
 ```asm
 sup:
