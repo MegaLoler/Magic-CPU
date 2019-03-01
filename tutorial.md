@@ -84,7 +84,9 @@ The *byte* in magic assembly is an *unsigned 8-bit value*, which means that it i
 
 A byte, of course, only occupies a single byte of space in memory, that byte being numerically equivalent to the value it represents.
 
-A byte literal (for use as an immediate argument) is written as the number, followed by an optional *base designator*, followed by `%8`. For example, the *byte* value as written in hexidecimal `50` would be written as `50h%8`. The *base designator* indicates what *base* the number is written in. The possible base designators are `b` (binary), `o` (octal), `d` (decimal, assumed by default if no base designator is present), and `h` (hexidecimal).
+A byte literal (for use as an immediate argument) is written as the number, followed by an optional *base designator*, followed by `%8`. For example, the *byte* value as written in hexidecimal `50` would be written as `50h%8`.
+
+The *base designator* indicates what *base* the number is written in. The possible base designators are `b` (binary), `o` (octal), `d` (decimal, assumed by default if no base designator is present), and `h` (hexidecimal).
 
 When accessing a *byte* using *direct addressing* or *indirect addressing*, postfix the memory address to be accessed with `%8` in order to specify that the value stored at that memory address is to be encoded and decoded from the bytestream as a *byte* value that occupies a single byte of memory. (Note that this is not explicitely necessary in the case of *byte* values, because *byte* is assumed by default.) For example, here is an instruction that reads an integer encoded as a *byte* (one byte) from memory at location `300` and prints it:
 ```asm
@@ -101,7 +103,9 @@ Mathematically, the first byte is equivalent to `value % 256` and the second byt
 
 If all of this is confusing to think about, don't worry! It is much easier to understand using hexidecimal numbers. For example, the number written in hexidecimal `a74c` would be encoded into the bytestream as a word such that the first byte is `4c` and the second byte is `a7`.
 
-A word literal (for use as an immediate argument) is written as the number, followed by an optional *base designator*, (optionally) followed by `%16`. For example, the *word* value as written in octal `4711` would be written as `4711o%16`. Note that number literals are interpretted as word values by default, so that it's not strictly necessary to append `%16` to the value. For example, the word value as written in decimal, `1234` can simply be written as `1234`. The *base designator* is the same as it is for bytes (see above section on bytes).
+A word literal (for use as an immediate argument) is written as the number, followed by an optional *base designator*, (optionally) followed by `%16`. For example, the *word* value as written in octal `4711` would be written as `4711o%16`. Note that number literals are interpretted as word values by default, so that it's not strictly necessary to append `%16` to the value. For example, the word value as written in decimal, `1234` can simply be written as `1234`.
+
+The *base designator* is the same as it is for bytes (see above section on bytes).
 
 Note that number values less than `256` can be encoded as either a byte or a word. If you encode it is a word, however, it will occupy two bytes of memory, and the upper byte will be `0`.
 
