@@ -1,4 +1,3 @@
-from argument import Literal
 from memory_interface_spec import *
 from data_type import *
 import util

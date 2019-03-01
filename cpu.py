@@ -1,5 +1,3 @@
-import time
-
 class CPU:
     ''' calling it CPU for now, i know it's supposed to actually be different from a real CPU though '''
     def step(self, context):
