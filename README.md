@@ -22,6 +22,8 @@ python assembler.py asm/hello_world.asm bin/hello_world.bin
 
 (You'll need to make sure you have the `tatsu` module installed in order to use the assembler.)
 
+To learn how to write code, see `tutorial.md`
+
 ## Ideas
 
 I want to add built-in thread functionality. This would be easy: just a "new thread" operation, which spawns a new python thread with a copy of the execution context, and jumps to some location to continue executing from there.
