@@ -134,7 +134,7 @@ In order to stress the importance of specifying the type of the data being acces
 echo @1
 ; => 72
 ```
-As a fun example, suppose you tried to access the string as a word. The first two byte of the string (`72` and `101` in decimal, corresponding to the ASCII characters 'H' and 'e') would be fetched from memory and assembled into the integer `25928` because `72 + 101 * 256 = 25928`:
+As a fun example, suppose you tried to access the string as a word. The first two bytes of the string (`72` and `101` in decimal, corresponding to the ASCII characters 'H' and 'e') would be fetched from memory and assembled into the integer `25928` because `72 + 101 * 256 = 25928`:
 ```asm
 ; assuming the string "Hello" is at memory location 1:
 echo @1%16
@@ -161,7 +161,7 @@ In order to access *program memory*, place a `p` before the number value which i
 echo @p20
 ```
 
-As mentioned, it isn't necessary to explicitely specify so when you want to access *player memory*, becaues it is the memory interface that is used by default. However, if you like, place an `r` before the number value which is the memory address to be accessed. Here is an example of an instruction that prints the number value located in player memory at location `14`, using the explicit syntax:
+As mentioned, it isn't necessary to explicitely specify so when you want to access *player memory*, because it is the memory interface that is used by default. However, if you like, place an `r` before the number value which is the memory address to be accessed. Here is an example of an instruction that prints the number value located in player memory at location `14`, using the explicit syntax:
 ```asm
 ; read: echo [the value] at [player] ram location 14
 echo @r14
