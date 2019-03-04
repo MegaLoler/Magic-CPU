@@ -8,10 +8,12 @@ class Player:
 
     def run_program(self, program_memory, cpu, game):
         ''' make this player run a program using some cpu '''
+
         # create the context for execution
         # the program memory is the provided program data
         # and the player is this player!
         # and the game is provided
         context = ExecutionContext(program_memory, self, game)
+        
         # and tell the cpu to run indefinitely!
         return cpu.run(context)

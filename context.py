@@ -8,19 +8,25 @@ class ExecutionContext:
     also can tell the cpu who is running this program
     that way access can be had to the player's own local ram
     '''
+
     def __init__(self, memory, player, game, pointer=0):
         # memory is the memory interface providing access to the program
         self.memory = memory
+
         # the player executing this program
         self.player = player
+
         # the game instance running this program
         self.game = game
+
         # pointer is where the cpu is currently looking
         self.jump(pointer)
+
         # this will tell whether the program has halted or not
         # when a program is finished and wants to exit, it will use the halt operation
         # which will then set this to True
         self.halted = False
+        
         # this "return register" holds a value to return when the program is finished
         self.return_register = None
 
