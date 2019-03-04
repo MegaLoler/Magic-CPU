@@ -4,7 +4,7 @@
 jmp main
 
 ; include external code
-#include std.asm
+#include lib/std.asm
 
 ; example of a null preprocessor directive
 #nop
