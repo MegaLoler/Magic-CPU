@@ -194,15 +194,28 @@ def stackdump(context):
     ''' a debug function to dump the contexts of the data stack '''
     print(context.stack)
 
+@op((byte_type, word_type, string_type,), (byte_type, word_type, string_type,),)
+def coerce(context, target, value):
+    ''' convert a value into a different type and store the result in target '''
+    # first get the new value
+    new_value = target.data_type.python_type(value.value)
+    # store it!
+    target.value = new_value
+
+@op((byte_type,),)
+def stacklen(context, length):
+    ''' get the length of the data stack and store it somewhere '''
+    length.value = len(context.stack)
+
 @op((byte_type, word_type, string_type,),)
 def push(context, value):
     ''' push a value onto the stack '''
     context.stack.append(value.value)
 
 @op((byte_type, word_type, string_type,),)
-def pull(context, value):
-    ''' pull a value off of the stack '''
-    value.value = context.stack.pop()
+def pull(context, target):
+    ''' pull a value off of the stack and implicitly coerce it '''
+    target.value = target.data_type.python_type(context.stack.pop())
 
 @op()
 def dump(context):

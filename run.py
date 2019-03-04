@@ -12,16 +12,16 @@ from memory import FileMemory
 
 # usage: python run.py program.bin
 
-def run_file(filename, cpu, player, game):
+def run_file(filename, arguments, cpu, player, game):
     ''' run a binary program stored in an external file as a player on some cpu '''
 
     # load the program memory from the file
     program_memory = FileMemory(filename)
 
     # and make the player run it
-    return player.run_program(program_memory, cpu, game)
+    return player.run_program(program_memory, arguments, cpu, game)
 
-def test_run(filename):
+def test_run(filename, arguments):
     ''' run a program stored in an extern file in a dummy game environment with a dummy player '''
 
     # create the dummy game instance
@@ -34,13 +34,13 @@ def test_run(filename):
     cpu = CPU()
 
     # and then run the program in the file
-    return run_file(filename, cpu, player, game)
+    return run_file(filename, arguments, cpu, player, game)
 
 if __name__ == '__main__':
-    if len(sys.argv) == 2:
+    if len(sys.argv) > 1:
 
-        # run the program and get the return value
-        result = test_run(sys.argv[1])
+        # run the program with args and get the return value
+        result = test_run(sys.argv[1], sys.argv[2:])
 
         # print that return value
         print(f'The program completed: {result}')

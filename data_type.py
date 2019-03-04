@@ -46,6 +46,10 @@ class ByteInterface(DataTypeInterface):
         ''' compile a byte value into a bytecode representation '''
         return bytes([value])
 
+    def python_type(self, value):
+        ''' coerce a value into a python value '''
+        return int(value) % 2 ** 8
+
 class WordInterface(DataTypeInterface):
     ''' represents the interface to a 16-bit quantity '''
     def read(self, context, stream, address):
@@ -84,6 +88,10 @@ class WordInterface(DataTypeInterface):
         low_byte = value % 256
         # remember, little-endian, so low byte first
         return bytes([low_byte, high_byte])
+
+    def python_type(self, value):
+        ''' coerce a value into a python value '''
+        return int(value) % 2 ** 16
 
 class StringInterface(DataTypeInterface):
     ''' represents a null terminate ascii encoded string '''
@@ -148,6 +156,9 @@ class StringInterface(DataTypeInterface):
 
         # encode it as ascii and add a null terminator
         return value.encode('ascii') + bytes([0])
+
+    # just use str as the conversion method
+    python_type = str
 
 class OpcodeInterface(DataTypeInterface):
     ''' an interface for encoding and decoding opcode byte values '''

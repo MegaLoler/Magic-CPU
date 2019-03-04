@@ -6,7 +6,7 @@ class Player:
     def __init__(self):
         self.ram = RAM(bytearray(2**10)) # 1kb of ram, of course it can be however much you like!
 
-    def run_program(self, program_memory, cpu, game):
+    def run_program(self, program_memory, arguments, cpu, game):
         ''' make this player run a program using some cpu '''
 
         # create the context for execution
@@ -16,4 +16,4 @@ class Player:
         context = ExecutionContext(program_memory, self, game)
         
         # and tell the cpu to run indefinitely!
-        return cpu.run(context)
+        return cpu.run(context, arguments)

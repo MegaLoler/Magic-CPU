@@ -19,7 +19,7 @@ class CPU:
         ''' or call this function and have the cpu run the program until it halts '''
 
         # load the program arguments into the data stack
-        context.data_stack = arguments
+        context.stack = arguments
 
         # continuously step through the program until halted
         while not context.halted:
