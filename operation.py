@@ -168,9 +168,14 @@ def halt(context, value):
     context.halt(value.value)
 
 @op()
-def stackdump(context):
-    ''' a debug function to dump the contexts of the stack '''
+def callstackdump(context):
+    ''' a debug function to dump the contexts of the call stack '''
     print(context.stack)
+
+@op()
+def stackdump(context):
+    ''' a debug function to dump the contexts of the data stack '''
+    print(context.call_stack)
 
 @op((byte_type, word_type, string_type,),)
 def push(context, value):

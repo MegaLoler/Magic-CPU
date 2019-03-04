@@ -57,5 +57,5 @@ stackdump
 halt 0
 
 secret_code:
-echo "you've reached a secret portion of this program, goodbye"
-jmp return
+	echo "you've reached a secret portion of this program, goodbye"
+	jmp return ; test

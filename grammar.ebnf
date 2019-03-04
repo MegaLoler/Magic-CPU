@@ -43,8 +43,8 @@ label::Label = string:(/[a-zA-Z\_][a-zA-Z0-9\_]*/) ;
 # a label definition is a label followed by a colon
 label_definition::LabelDefinition = label:label ":" ;
 
-# an instruction is a mnemonic optionally followed by some arguments followed by a newline
-instruction::Instruction = mnemonic:mnemonic arguments:","%{argument}* "\n" ;
+# an instruction is a mnemonic optionally followed by some arguments followed by a newline or a comment
+instruction::Instruction = mnemonic:mnemonic arguments:","%{argument}* ("\n" | comment) ;
 
 # a mnemonic is an alphabetic string
 mnemonic = /[a-zA-Z]+/ ;
