@@ -39,4 +39,8 @@ pull @0%16
 inc @0%16
 echo @0%16
 
+; print the individual bytes of that word
+echo @0
+echo @1
+
 ret

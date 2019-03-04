@@ -7,6 +7,7 @@
 # usage: python assembler.py input.asm output.bin
 
 from memory_interface_spec import *
+from preprocessor import preprocess
 import operation
 import data_type
 import sys
@@ -255,7 +256,10 @@ class walker(tatsu.walkers.NodeWalker):
 
     def walk_Label(self, node):
         ''' lookup a label address! '''
-        return self.labels[node.string], data_type.word_type
+        if node.string in self.labels:
+            return self.labels[node.string], data_type.word_type
+        else:
+            raise Exception(f'Unknown label "{node.string}"')
 
     def walk_Type(self, node):
         return self.walk(node.type)
@@ -309,16 +313,26 @@ def assemble(code):
 if __name__ == '__main__':
 
     if len(sys.argv) == 3:
+        
+        # get the source filename and the target binary filenames
         in_filename = sys.argv[1]
         out_filename = sys.argv[2]
 
+        # read in all the source code
         with open(in_filename, 'r') as f:
             print(f'Reading "{in_filename}"...')
             code = f.read()
 
+        # run the preprocessor
+        # the preprocessor as is should never be used in game, because it accesses the filesystem
+        print('Preprocessing...')
+        code = preprocess(in_filename, code)
+
+        # assemble the binary
         print('Assembling...')
         bytecode = assemble(code)
 
+        # write out the binary file
         with open(out_filename, 'wb') as f:
             print(f'Writing assembled program to "{out_filename}"...')
             f.write(bytecode)

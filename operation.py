@@ -308,5 +308,10 @@ def cow(context):
         address = random.randint(0, context.player.ram.length - 1)
         context.player.ram.write(context, address, 'moo', string_type)
 
+@op((string_type,), (string_type,),)
+def cat(context, a, b):
+    ''' concatenate the strings a and b and store the result back in a '''
+    a.value = a.value + b.value
+
 # for ease of testing, run this file to get a printout of op codes
 if __name__ == '__main__': dir_ops()
