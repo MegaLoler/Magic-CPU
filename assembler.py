@@ -112,7 +112,7 @@ class walker(tatsu.walkers.NodeWalker):
                         spec = opspec[i]
                         arg = arguments[i]
 
-                        if arg.__class__.__name__ == "Immediate":
+                        if arg.__class__.__name__ == 'Immediate':
                             if type(spec) != data_type.ImmediateInterface:
                                 match = False
                                 break
@@ -122,12 +122,12 @@ class walker(tatsu.walkers.NodeWalker):
                                 break
 
                         else:
-                            if arg.__class__.__name__ == "Direct":
+                            if arg.__class__.__name__ == 'Direct':
                                 if type(spec) != data_type.DirectInterface:
                                     match = False
                                     break
 
-                            elif arg.__class__.__name__ == "Indirect":
+                            elif arg.__class__.__name__ == 'Indirect':
                                 if type(spec) != data_type.DirectInterface:
                                     match = False
                                     break
