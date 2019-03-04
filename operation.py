@@ -313,5 +313,12 @@ def cat(context, a, b):
     ''' concatenate the strings a and b and store the result back in a '''
     a.value = a.value + b.value
 
+@op((string_type,), (string_type,),)
+def read_file(context, target, filename):
+    ''' read a file from the host system and copy the string value into target '''
+    # WARNING: remove this op code before going public!! this is dangerous
+    with open(filename.value, 'r') as f:
+        target.value = f.read()
+
 # for ease of testing, run this file to get a printout of op codes
 if __name__ == '__main__': dir_ops()

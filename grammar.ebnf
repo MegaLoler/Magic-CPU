@@ -11,7 +11,7 @@ code::Code = objects:{object}* $ ;
 
 # an object is a label definition or an instruction or a comment to be ignored
 # followed by any whitespace
-object = object:( instruction | label_definition | comment ) /\s*/ ;
+object = object:( instruction | variable_definition | label_definition | comment ) /\s*/ ;
 
 # a comment starts with a semicolon and ends with a newline
 comment::Comment = ";" /.*/ "\n" ;
@@ -43,11 +43,14 @@ label::Label = string:(/[a-zA-Z\_][a-zA-Z0-9\_]*/) ;
 # a label definition is a label followed by a colon
 label_definition::LabelDefinition = label:label ":" ;
 
+# a variable definitenio is a label followed by an equals sign followed by a value
+variable_definition::VariableDefinition = label:label "=" value:word;
+
 # an instruction is a mnemonic optionally followed by some arguments followed by a newline or a comment
 instruction::Instruction = mnemonic:mnemonic arguments:","%{argument}* ("\n" | comment) ;
 
 # a mnemonic is an alphabetic string
-mnemonic = /[a-zA-Z]+/ ;
+mnemonic = /[a-zA-Z_]+/ ;
 
 # an argument is either an immediate , a direct value , or an indirect value
 argument = immediate | direct | indirect ;
@@ -56,10 +59,10 @@ argument = immediate | direct | indirect ;
 immediate::Immediate = value:value ;
 
 # a direct is an optional interface indicator followed by "@" followed by an address followed by a type
-direct::Direct = "@" interface:interface address:numeral type:type ;
+direct::Direct = "@" interface:interface address:(numeral | label) type:type ;
 
 # indirect is an optional interface indicator followed by "@@" followed by an address followed by a type
-indirect::Indirect = "@@" interface:interface address:numeral type:type ;
+indirect::Indirect = "@@" interface:interface address:(numeral | label) type:type ;
 
 # an interface is either program , player , or omni
 # ugh how to debug this and make it work

@@ -202,6 +202,11 @@ class walker(tatsu.walkers.NodeWalker):
         ''' a comment was read, ignore it '''
         return bytes()
 
+    def walk_VariableDefinition(self, node):
+        ''' define this label '''
+        self.labels[node.label.string] = self.walk(node.value)[0]
+        return bytes()
+
     def walk_LabelDefinition(self, node):
         ''' put a label placeholder here '''
         return LabelPlaceholder(node.label.string)
@@ -240,12 +245,20 @@ class walker(tatsu.walkers.NodeWalker):
 
     def walk_Direct(self, node):
         ''' read an direct argument '''
-        address = self.walk(node.address)
+        # this is an ugly hack
+        if node.address.__class__.__name__ == 'Numeral':
+            address = self.walk(node.address)
+        else:
+            address, dt = self.walk(node.address)
         return data_type.word_type.compile(address)
 
     def walk_Indirect(self, node):
         ''' read an direct argument '''
-        address = self.walk(node.address)
+        # this is an ugly hack
+        if node.address.__class__.__name__ == 'Numeral':
+            address = self.walk(node.address)
+        else:
+            address, dt = self.walk(node.address)
         return data_type.word_type.compile(address)
 
     def walk_Program(self, node):
