@@ -85,17 +85,41 @@ echo @0%8
 
 ;;; OMNI RAM
 ; need to fix the grammar for it to work lol
-;move @o0%s, "string for omni ram!"
+;copy @o0%s, "string for omni ram!"
 ; tht string is now in OMNI ram rather than local player ram
 ;echo @o0%s
 
 
+;;; access a string as the wrong type!
+copy @1%s, "Hello"
+; first, the right type
+echo @1%s
+; now as byte
+echo @1%8
+; or
+echo @1
+; now as word
+echo @1%16
 
 
 ;;; use the cow opcode
 prompt "are u ready to get cow'd up in here?"
 cow
 ; check it out ; )
+dump
+
+
+;;; NUMBER BASES
+; hex value 11
+copy @0, 11h
+; decimal value 11
+;copy @2, 11d     ;;;;; BROKENNNNNNN hAAAAAAAA
+; also decimal value 11
+copy @4, 11
+; octal value 11
+copy @6, 11o
+; binary value 100
+;copy @8, 100b  ;;;;;; ALSO BROKEN AAAAAA
 dump
 
 
