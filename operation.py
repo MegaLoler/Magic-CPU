@@ -154,7 +154,7 @@ def jmp(context, address):
     ''' jump unconditionally to some location in program memory and continue executing from there '''
     context.jump(address.value)
 
-@op((byte_type,word_type,), (word_type,),)
+@op((byte_type, word_type,), (word_type,),)
 def jmpif(context, condition, address):
     ''' jump conditionally if the first argument is truthy '''
     if condition.value: context.jump(address.value)
@@ -166,6 +166,21 @@ def halt(context, value):
     the argument will be returned when the program exits
     '''
     context.halt(value.value)
+
+@op()
+def stackdump(context):
+    ''' a debug function to dump the contexts of the stack '''
+    print(context.stack)
+
+@op((byte_type, word_type, string_type,),)
+def push(context, value):
+    ''' push a value onto the stack '''
+    context.stack.append(value.value)
+
+@op((byte_type, word_type, string_type,),)
+def pull(context, value):
+    ''' pull a value off of the stack '''
+    value.value = context.stack.pop()
 
 @op()
 def dump(context):

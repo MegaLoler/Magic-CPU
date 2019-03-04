@@ -30,6 +30,9 @@ class ExecutionContext:
         # this "return register" holds a value to return when the program is finished
         self.return_register = None
 
+        # this is the stack
+        self.stack = list()
+
     def halt(self, value=None):
         ''' set the execution to halt with some return value '''
         self.halted = True
