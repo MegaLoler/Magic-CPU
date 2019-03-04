@@ -9,7 +9,6 @@
 echo "here's the stack at the beginning:"
 stackdump
 
-loop:
 ; now push some random values to the stack:
 push 1
 push 2
@@ -18,7 +17,7 @@ push 50h
 push 500
 push "hello"
 ; also push a label address!
-push loop
+push secret_code
 
 ; and dump those
 echo "have some stuff:"
@@ -30,6 +29,9 @@ stackdump
 pull @0%16
 echo @0%16
 stackdump
+; also, before continuing, lets jump to that address just pulled from the stack!
+jmp @0%16
+return:
 ; then that string
 pull @0%s
 echo @0%s
@@ -53,3 +55,7 @@ stackdump
 
 ; bye
 halt 0
+
+secret_code:
+echo "you've reached a secret portion of this program, goodbye"
+jmp return

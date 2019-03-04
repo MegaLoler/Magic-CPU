@@ -7,8 +7,5 @@ SOURCE=asm/$1.asm
 # bin file name
 BINARY=bin/$1.bin
 
-# first assemble it
-./assembler.py $SOURCE $BINARY
-
-# then run it
-./run.py $BINARY
+# assemble and run if successful
+./assembler.py $SOURCE $BINARY && ./run.py $BINARY

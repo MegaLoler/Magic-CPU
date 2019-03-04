@@ -38,7 +38,7 @@ numeral::Numeral = digits:(/[0-9a-fA-F]+/) base:[/[bodh]/];
 string::String = '"' string:(/(?<=\')(.*?)(?=\')|(?<=\")(.*?)(?=\")+/) '"' ; # make better l8r
 
 # a label is an alphanumeric string
-label::Label = string:(/[a-zA-Z][a-zA-Z0-9]+/) ;
+label::Label = string:(/[a-zA-Z\_][a-zA-Z0-9\_]*/) ;
 
 # a label definition is a label followed by a colon
 label_definition::LabelDefinition = label:label ":" ;
