@@ -2,8 +2,8 @@
 ;;; use in assembly files with the #include directive
 
 ; a function that prints a value with a prompt
-; print(prompt, value)
-print:
+; print_prompt(prompt, value)
+print_prompt:
 	; pop the prompt value
 	pull @0%s
 	; pop the value as well

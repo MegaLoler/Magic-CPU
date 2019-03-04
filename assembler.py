@@ -13,6 +13,7 @@ import data_type
 import sys
 import tatsu
 import tatsu.walkers
+import os
 
 """
     Constants
@@ -22,7 +23,9 @@ BYTE_SIZE = 256
 WORD_SIZE = 65536
 
 # open and compile the assemebly language grammar for use
-with open('grammar.ebnf', 'r') as f:
+cd = os.path.dirname(__file__)
+grammar_filename = f'{cd}/grammar.ebnf'
+with open(grammar_filename, 'r') as f:
     grammar = f.read()
     parser = tatsu.compile(grammar, asmodel=True)
 

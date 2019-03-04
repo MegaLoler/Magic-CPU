@@ -14,5 +14,5 @@ main:
 	read @0%s, "what's your name? "
 	push @0%s
 	push "your name is "
-	call print
+	call print_prompt
 	ret	

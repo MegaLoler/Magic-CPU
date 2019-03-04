@@ -1,0 +1,19 @@
+// FizzBuzz test program!
+
+using namespace std;
+
+void main(String[] args) {
+    for (int8 i = 1; i != 100; i++) {
+        if (!(i % 3)) { // 0 is == to false, but if it's a hassle, an explicit bool could be used
+            print("fizz")
+        }
+
+        else if (!(i % 5)) {
+            print("buzz")
+        }
+
+        else {
+            print(i);
+        }
+    }
+}
