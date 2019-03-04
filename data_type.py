@@ -236,13 +236,11 @@ class Recterface(DataTypeInterface):
     def read(self, context, stream, address):
         ''' read a direct address argument '''
 
-        from argument import Direct
-
         # read the address value (addresses are assumed to be 16 bit, so we use the word interface)
         address, offset = WordInterface().read(context, stream, address)
 
         # create an argument from this address value
-        argument = Direct(context, self.memory_spec.resolve(context), address, self.data_type)
+        argument = self.argument_class(context, self.memory_spec.resolve(context), address, self.data_type)
 
         # return the argument and the offset
         return argument, offset
@@ -251,12 +249,25 @@ class Recterface(DataTypeInterface):
         # TODO
         pass
 
-class DirectInterface(Recterface):
-    pass
+    @property
+    @abstractmethod
+    def argument_class(self):
+        ''' get the class of the argument to be returned by read '''
+        ...
 
-# note: should probabably generalize this and the above, its much duplicate
+class DirectInterface(Recterface):
+    @property
+    def argument_class(self):
+        ''' get the class of the argument to be returned by read '''
+        from argument import Direct
+        return Direct
+
 class IndirectInterface(Recterface):
-    pass
+    @property
+    def argument_class(self):
+        ''' get the class of the argument to be returned by read '''
+        from argument import Indirect
+        return Indirect
 
 class InstructionInterface(DataTypeInterface):
     ''' represents an interface for reading and writing instruction encodings '''
