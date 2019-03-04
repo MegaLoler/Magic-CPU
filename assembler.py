@@ -113,14 +113,14 @@ class walker(tatsu.walkers.NodeWalker):
                         spec = opspec[i]
                         arg = arguments[i]
 
-                        if isinstance(arg, walk_Immediate):
+                        if arg.__class__.__name__ == 'Immediate':
                             match = type(spec) is data_type.ImmediateInterface and lil_walker.walk(arg.value) is spec.data_type
 
                         else:
-                            if isinstance(arg, walk_Direct):
+                            if arg.__class__.__name__ == 'Direct':
                                 match = type(spec) is data_type.DirectInterface
 
-                            elif isinstace(arg, walk_Indirect):
+                            elif arg.__class__.__name__ == 'Indirect':
                                 match = type(spec) is data_type.DirectInterface
 
                             match = self.walk(arg.type) is spec.data_type and self.walk(arg.interface) is spec.memory_spec
