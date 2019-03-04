@@ -16,7 +16,7 @@ The compiler binary will be located in `build/runic.bin`
 To use the Runic compiler to compile a Runic program, do this:
 
 ```bash
-python ../assembler.py build/runic.bin your_program.spell
+python ../run.py build/runic.bin your_program.spell
 ```
 
 To run the test spell, you can simply do this:
