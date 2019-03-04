@@ -56,8 +56,15 @@ stackdump
 ; now lets test some function calls!!
 echo "calling f1..."
 call function_1
+
+push "arg"	; the data stack is a good means of passing argument and return values between functions
 echo "calling f2..."
 call function_2
+pull @0%s
+echo "f2 returned this value:"
+echo @0%s
+
+; done calling funcs!
 echo "called all them functions"
 
 ; this would cause an error, because the call stack is empty:
@@ -74,12 +81,22 @@ function_1:
 	echo "this is function 1 speaking"
 	ret
 
+; let this function take one string argument given on the data stack
 function_2:
 	echo "this is function 2 speaking"
+	; show the argument recieved
+	echo "i've recieved this value:"
+	pull @0%s
+	echo @0%s
+	
 	; lets call another function inside this function!
 	echo "calling f3 from inside f2..."
 	call function_3
 	echo "done calling f3! returning now"
+
+	; let's return a message
+	; py pushing it to the stack
+	push "return value dude"
 	ret
 
 function_3:
