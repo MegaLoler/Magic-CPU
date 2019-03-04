@@ -1,4 +1,6 @@
-# Magic Assembly Tutorial
+***Note:*** The first part of this document is all explanation of the basics. See the end of this document for a practical tutorial!
+
+# Magic Assembly Basics
 
 A program in magic assembly is just a series of **instructions**. The program executes from the very top and goes downwards.
 
@@ -194,3 +196,11 @@ echo "world"
 ; and jump back to the beginning of the loop, repeating forever
 jmp loop
 ```
+
+## The Stacks
+
+**TODO: write about the data stack and the call stack**
+
+# Practical Tutorial
+
+**TODO: write about all the ops and how to do basic things**
