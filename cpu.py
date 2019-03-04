@@ -15,12 +15,15 @@ class CPU:
         # the second thing to do is to execute that instruction
         return instruction.execute(context)
 
-    def run(self, context):
+    def run(self, context, arguments=list()):
         ''' or call this function and have the cpu run the program until it halts '''
+
+        # load the program arguments into the data stack
+        context.data_stack = arguments
 
         # continuously step through the program until halted
         while not context.halted:
             self.step(context)
 
-        # return whatever value is stored in the return register
-        return context.return_register
+        # return the data stack as the final return value(s)
+        return context.stack

@@ -67,11 +67,10 @@ echo @0%s
 ; done calling funcs!
 echo "called all them functions"
 
-; this would cause an error, because the call stack is empty:
-;ret
-
 ; bye
-halt 0
+; note, you can end a program either with the `halt` op
+; or by using the `ret` op from the toplevel, such as here
+ret
 
 secret_code:
 	echo "you've reached a secret portion of this program, goodbye"

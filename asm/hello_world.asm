@@ -124,4 +124,5 @@ dump
 
 
 ; exit with a random value
-halt 78
+push 78
+halt

@@ -163,8 +163,11 @@ def ret(context):
     ''' return from a subroutine
 
     this means pop the return address from the call stack and jump there
+
+    alternatively, if returning from toplevel, halt the cpu
     '''
-    context.jump(context.call_stack.pop())
+    if context.call_stack: context.jump(context.call_stack.pop())
+    else: context.halt()
 
 @op((word_type,),)
 def jmp(context, address):
@@ -176,23 +179,20 @@ def jmpif(context, condition, address):
     ''' jump conditionally if the first argument is truthy '''
     if condition.value: context.jump(address.value)
 
-@op((word_type,),)
-def halt(context, value):
-    ''' halt program execution, signalling that the program is finished
-
-    the argument will be returned when the program exits
-    '''
-    context.halt(value.value)
+@op()
+def halt(context):
+    ''' halt program execution, signalling that the program is finished '''
+    context.halt()
 
 @op()
 def callstackdump(context):
     ''' a debug function to dump the contexts of the call stack '''
-    print(context.stack)
+    print(context.call_stack)
 
 @op()
 def stackdump(context):
     ''' a debug function to dump the contexts of the data stack '''
-    print(context.call_stack)
+    print(context.stack)
 
 @op((byte_type, word_type, string_type,),)
 def push(context, value):

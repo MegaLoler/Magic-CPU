@@ -27,19 +27,15 @@ class ExecutionContext:
         # which will then set this to True
         self.halted = False
         
-        # this "return register" holds a value to return when the program is finished
-        self.return_register = None
-
         # this is the data stack
         self.stack = list()
 
         # and this is the call stack
         self.call_stack = list()
 
-    def halt(self, value=None):
-        ''' set the execution to halt with some return value '''
+    def halt(self):
+        ''' set the execution to halt '''
         self.halted = True
-        self.return_register = value
 
     def jump(self, address):
         ''' set the pointer, wrapping it around if needed '''

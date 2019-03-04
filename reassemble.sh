@@ -5,4 +5,8 @@ for asm in asm/*
 do
 	bin=bin/$(basename $asm .asm).bin
 	./assembler.py $asm $bin
+	if [ $? -ne 0 ]
+	then
+		break
+	fi
 done

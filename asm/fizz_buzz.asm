@@ -55,4 +55,4 @@ sub @1, 100
 jmpif @1, loop
 
 ; done
-halt 0
+halt

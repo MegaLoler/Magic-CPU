@@ -42,8 +42,6 @@ Speaking of addressing modes, generalize indirection such that you can have an a
 
 Implement the above ideas! And reworking whatever underlying code necessary in the process, haha.
 
-Implement a stack, lol
-
 Fix the grammar so that memory interface designation actually works. XD
 
 Honestly just clean up a lot of the code in general, lol, there's a lot of slop
