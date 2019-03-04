@@ -150,6 +150,23 @@ def prompt(context, prompt):
     input(prompt.value)
 
 @op((word_type,),)
+def call(context, address):
+    ''' call a subroutine located at some address!
+    
+    puts the current pointer on the call stack so you can return to it later
+    '''
+    context.call_stack.append(context.pointer)
+    context.jump(address.value)
+
+@op()
+def ret(context):
+    ''' return from a subroutine
+
+    this means pop the return address from the call stack and jump there
+    '''
+    context.jump(context.call_stack.pop())
+
+@op((word_type,),)
 def jmp(context, address):
     ''' jump unconditionally to some location in program memory and continue executing from there '''
     context.jump(address.value)

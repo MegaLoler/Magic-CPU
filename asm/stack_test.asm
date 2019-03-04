@@ -53,9 +53,36 @@ pull @0
 echo @0
 stackdump
 
+; now lets test some function calls!!
+echo "calling f1..."
+call function_1
+echo "calling f2..."
+call function_2
+echo "called all them functions"
+
+; this would cause an error, because the call stack is empty:
+;ret
+
 ; bye
 halt 0
 
 secret_code:
 	echo "you've reached a secret portion of this program, goodbye"
 	jmp return ; test
+
+function_1:
+	echo "this is function 1 speaking"
+	ret
+
+function_2:
+	echo "this is function 2 speaking"
+	; lets call another function inside this function!
+	echo "calling f3 from inside f2..."
+	call function_3
+	echo "done calling f3! returning now"
+	ret
+
+function_3:
+	echo "hello, this is the infamous f3."
+	; evil
+	ret
