@@ -167,11 +167,11 @@ class OpcodeInterface(DataTypeInterface):
         # store the opcode value
         opcode = 0
 
-        byte = True
+        byte = 0xff
 
         # read until its not 0xff
         # if it's 0xff, than means go to the next page of possible opcode values
-        while byte != 0xff:
+        while byte == 0xff:
 
             # read the next byte
             byte = stream[address + offset]

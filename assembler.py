@@ -70,63 +70,60 @@ class InstructionPlaceholder:
         return len(self.opcode_bytes) + sum(map(lil_walker.walk, self.arguments))
 
 class walker(tatsu.walkers.NodeWalker):
+    # temporarily replacing this function with the old code so it works for now Dx
+    # i'll clean it up like you had it soon enough!
     def lookup_opcode(self, mnemonic, arguments):
         ''' lookup an opcode that corresponds to this mnemonic and these arguments '''
-
         # this function is a disaster lol
         # some more testing oughtta be done......
         # loop through each opspec to find the match
         class LilWalker(tatsu.walkers.NodeWalker):
             ''' idek care anymore this function has to go '''
-
             def walk_Byte(self, node):
                 return data_type.byte_type
-
             def walk_Label(self, node):
                 return data_type.word_type
-
             def walk_Word(self, node):
                 return data_type.word_type
-
             def walk_String(self, node):
                 return data_type.string_type
-
         lil_walker = LilWalker()
-
         for opcode in range(len(operation.opspecs)):
             opspec = operation.opspecs[opcode]
             op = operation.opcodes[opcode]
-
             # make sure the mnemonic matches first, silly
             if op.mnemonic.lower() == mnemonic.lower():
-
                 # and make sure arity matches, too
                 if len(opspec) == len(arguments):
-
                     # loop through each argument
                     # and make sure it matches
                     match = True
                     for i in range(len(opspec)):
-                        if not match:
-                            break
-
                         spec = opspec[i]
                         arg = arguments[i]
-
-                        if arg.__class__.__name__ == 'Immediate':
-                            match = type(spec) is data_type.ImmediateInterface and lil_walker.walk(arg.value) is spec.data_type
-
+                        if arg.__class__.__qualname__ == "Immediate":
+                            if type(spec) != data_type.ImmediateInterface:
+                                match = False
+                                break
+                            if lil_walker.walk(arg.value).__class__ != spec.data_type.__class__:
+                                match = False
+                                break
                         else:
-                            if arg.__class__.__name__ == 'Direct':
-                                match = type(spec) is data_type.DirectInterface
-
-                            elif arg.__class__.__name__ == 'Indirect':
-                                match = type(spec) is data_type.DirectInterface
-
-                            match = self.walk(arg.type) is spec.data_type and self.walk(arg.interface) is spec.memory_spec
-
+                            if arg.__class__.__qualname__ == "Direct":
+                                if type(spec) != data_type.DirectInterface:
+                                    match = False
+                                    break
+                            elif arg.__class__.__qualname__ == "Indirect":
+                                if type(spec) != data_type.DirectInterface:
+                                    match = False
+                                    break
+                            if self.walk(arg.type).__class__ != spec.data_type.__class__:
+                                match = False
+                                break
+                            if self.walk(arg.interface).__class__ != spec.memory_spec.__class__:
+                                match = False
+                                break
                     if match: return opcode
-
         # raise a somewhat helpful exception
         args = ', '.join(map(str, arguments))
         raise Exception(f'Failed to find opcode for {mnemonic} with {args}')
@@ -273,7 +270,7 @@ class walker(tatsu.walkers.NodeWalker):
     def walk_Numeral(self, node):
         ''' parse a number '''
         base_test = {'b': 2, 'o': 8, 'h': 16}
-        base = node.base in base_test.keys() and base_test[nose.base] or 10
+        base = base_test[node.base] if node.base in base_test else 10
         return int(node.digits, base)
 
 def assemble(code):
