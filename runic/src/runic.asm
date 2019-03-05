@@ -5,6 +5,7 @@ jmp main
 
 ; includes
 #include globals.asm
+#include memory.asm
 #include util.asm
 #include file_loader.asm
 #include compile.asm
@@ -15,6 +16,16 @@ jmp main
 main:
 	; greet the user
 	echo "Welcome to the RUNIC compiler!"
+
+	; setup memory management
+	call init_mem
+
+	; allocate memory for the source code
+	push 800h	; 2kb ?
+	call alloc
+	; set global source code pointer to allocated mem
+	pull @source_code%16	; pointer
+	pull @r0%16		; bytes allocated
 
 	; r0 = filename
 	pull @r0%s
@@ -31,11 +42,12 @@ main:
 	; the argument is already on the stack
 	; load_file(filename)
 	call load_file
+	dump
 
 	; the source should now be returned as a string on the data stack
 	; now compile it!
 	; the result will be on the stack, ready to return with the main program
-	call compile
+	;call compile
 
 	; return with the result of compilation
 	ret

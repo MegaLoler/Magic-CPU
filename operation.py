@@ -220,7 +220,20 @@ def pull(context, target):
 @op()
 def dump(context):
     ''' a debug function to dump the contexts of the players ram '''
-    print(context.player.ram.contents)
+    # this is ugly
+    s = ''
+    c = 16
+    r = 0
+    for byte in context.player.ram.contents:
+        if c == 16:
+            s += format(r, '03x') + '0: '
+            r += 1
+        s += format(byte, '02x') + ' '
+        c -= 1
+        if c == 0:
+            c = 16
+            s += '\n'
+    print(s)
 
 @op((byte_type, word_type, string_type,), (byte_type, word_type, string_type,),)
 def copy(context, destination, source):
@@ -317,6 +330,7 @@ def cat(context, a, b):
 def read_file(context, target, filename):
     ''' read a file from the host system and copy the string value into target '''
     # WARNING: remove this op code before going public!! this is dangerous
+    print(target)
     with open(filename.value, 'r') as f:
         target.value = f.read()
 
@@ -325,6 +339,11 @@ def repl(context, target, pattern, replacement):
     ''' replace occurences of pattern string in target string with replacement string and store the result back in target '''
     import re
     target.value = re.sub(pattern.value, replacement.value, target.value)
+
+@op((string_type,),)
+def error(context, message):
+    ''' raise an exception with an error message '''
+    raise Exception(message.value)
 
 # for ease of testing, run this file to get a printout of op codes
 if __name__ == '__main__': dir_ops()

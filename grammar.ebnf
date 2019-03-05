@@ -53,7 +53,7 @@ instruction::Instruction = mnemonic:mnemonic arguments:","%{argument}* ("\n" | c
 mnemonic = /[a-zA-Z_]+/ ;
 
 # an argument is either an immediate , a direct value , or an indirect value
-argument = immediate | direct | indirect ;
+argument = immediate | indirect | direct ;
 
 # an immediate is a value
 immediate::Immediate = value:value ;

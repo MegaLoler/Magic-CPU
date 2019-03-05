@@ -132,7 +132,7 @@ class walker(tatsu.walkers.NodeWalker):
                                     break
 
                             elif arg.__class__.__name__ == 'Indirect':
-                                if type(spec) != data_type.DirectInterface:
+                                if type(spec) != data_type.IndirectInterface:
                                     match = False
                                     break
 
