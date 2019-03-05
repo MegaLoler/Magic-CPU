@@ -5,6 +5,7 @@ jmp main
 
 ; includes
 #include globals.asm
+#include util.asm
 #include file_loader.asm
 #include compile.asm
 
@@ -15,9 +16,19 @@ main:
 	; greet the user
 	echo "Welcome to the RUNIC compiler!"
 
+	; r0 = filename
+	pull @r0%s
+	push @r0%s
+
+	; tell the user we are reading the file
+	push "..."
+	push @r0%s	; r0 = filename
+	push "Loading file "
+	push 3
+	call print_cat
+
 	; load the file into ram
-	; the filename argument is already on the stack,
-	; so we can just call the function:
+	; the argument is already on the stack
 	; load_file(filename)
 	call load_file
 

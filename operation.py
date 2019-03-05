@@ -320,5 +320,11 @@ def read_file(context, target, filename):
     with open(filename.value, 'r') as f:
         target.value = f.read()
 
+@op((string_type,), (string_type,), (string_type,),)
+def repl(context, target, pattern, replacement):
+    ''' replace occurences of pattern string in target string with replacement string and store the result back in target '''
+    import re
+    target.value = re.sub(pattern.value, replacement.value, target.value)
+
 # for ease of testing, run this file to get a printout of op codes
 if __name__ == '__main__': dir_ops()
