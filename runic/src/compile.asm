@@ -1,6 +1,7 @@
 ;;; the toplevel compiler code
 
 #include preprocessor.asm
+#include lexer.asm
 #include parser.asm
 #include generator.asm
 
@@ -12,6 +13,10 @@ compile:
 	; strips comments and deals with directives
 	echo "Preprocessing..."
 	call preprocess
+
+	; tokenize the code
+	echo "Tokenizing..."
+	call lex
 
 	; parse into an ast
 	echo "Parsing..."

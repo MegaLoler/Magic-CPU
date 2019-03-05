@@ -207,6 +207,21 @@ def stacklen(context, length):
     ''' get the length of the data stack and store it somewhere '''
     length.value = len(context.stack)
 
+@op()
+def ppush(context):
+    ''' pop the top of the stack and push it back twice '''
+    value = context.stack.pop()
+    context.stack.append(value)
+    context.stack.append(value)
+
+@op()
+def swap(context):
+    ''' swap the top two items on the stack '''
+    a = context.stack.pop()
+    b = context.stack.pop()
+    context.stack.append(a)
+    context.stack.append(b)
+
 @op((byte_type, word_type, string_type,),)
 def push(context, value):
     ''' push a value onto the stack '''
@@ -352,6 +367,11 @@ def brk(context):
     print(f'call stack: {context.call_stack}')
     print(f'data stack: {context.stack}')
     input(f'breakpoint @{context.pointer}')
+
+@op((byte_type, word_type,), (string_type,),)
+def leng(context, length, string):
+    ''' get the length of a string '''
+    length.value = len(string.value)
 
 # for ease of testing, run this file to get a printout of op codes
 if __name__ == '__main__': dir_ops()

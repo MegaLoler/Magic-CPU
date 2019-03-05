@@ -38,11 +38,15 @@ In regards to both of the above, generalize the way the instruction arguments wo
 
 Speaking of addressing modes, generalize indirection such that you can have an arbitrary amount of layers of references! (The syntax would reflect this by allowing you to have any number of `@` prefixes)
 
+Cons cells would make a really nice built in data type ; )
+
 ## Todo
 
 Implement the above ideas! And reworking whatever underlying code necessary in the process, haha.
 
 Fix the grammar so that memory interface designation actually works. XD
+
+Local labels are good
 
 Honestly just clean up a lot of the code in general, lol, there's a lot of slop
 

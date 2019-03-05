@@ -64,5 +64,12 @@ init:
 	pull @source_code%16	; pointer
 	pull 0			; discard allocated byte size
 
+	; allocate memory for the token stream
+	push 200h	; .5kb for now ?
+	call alloc
+	; set global token stream pointer to allocated mem
+	pull @token_string%16	; pointer
+	pull 0			; discard allocated byte size
+
 	; done
 	ret

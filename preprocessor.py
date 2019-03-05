@@ -42,7 +42,8 @@ def preprocess(filename, code):
     # strip all comments as well
     # because the comments are being stripped here,
     # they could potentially be removed from the grammar
-    code = re.sub(r'\;.*\n', '\n', code)
+    # ACTUALLY.... causing problems INSIDE STRINGS soidk
+    #code = re.sub(r'\;.*\n', '\n', code)
 
     # match directives (they are lines that start with #)
     code = re.sub(r'^\#(\w+)[ \t]*(.*)\n', repl, code, flags=re.MULTILINE)

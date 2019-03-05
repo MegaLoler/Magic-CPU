@@ -21,5 +21,8 @@ r15=15
 ; a pointer to the source code
 source_code=100h
 
+; a pointer to the token stream
+token_string=102h
+
 ; a pointer to a general use string buffer
-buffer=102h
+buffer=104h
