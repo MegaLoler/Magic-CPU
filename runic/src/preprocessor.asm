@@ -5,11 +5,7 @@
 ; preprocess(code)
 preprocess:
 	;; first strip comments
-
-	; r0 = code
-	pull @r0%s	
-	repl @r0%s, "//.*\n", ""
-	push @r0%s	
+	repl @@source_code%s, "//.*\n", ""
 
 	;; now process directives (macros, etc)
 	; TODO

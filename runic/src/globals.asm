@@ -19,4 +19,7 @@ r14=14
 r15=15
 
 ; a pointer to the source code
-source_code=16
+source_code=100h
+
+; a pointer to a general use string buffer
+buffer=102h

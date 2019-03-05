@@ -177,6 +177,9 @@ class walker(tatsu.walkers.NodeWalker):
             # if we see a label placeholder
             if isinstance(o, LabelPlaceholder):
 
+                if o.name in self.labels:
+                    raise Exception(f'Label "{o.name}" has already been defined')
+
                 # add that address to the list of known labels!
                 self.labels[o.name] = address
 

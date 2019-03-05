@@ -1,0 +1,8 @@
+// a hello world program!
+void main() {
+	// print the greeting to the world
+	print("Hello world!");
+
+	// exit the program
+	return;
+}

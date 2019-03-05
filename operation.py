@@ -330,7 +330,6 @@ def cat(context, a, b):
 def read_file(context, target, filename):
     ''' read a file from the host system and copy the string value into target '''
     # WARNING: remove this op code before going public!! this is dangerous
-    print(target)
     with open(filename.value, 'r') as f:
         target.value = f.read()
 
@@ -344,6 +343,15 @@ def repl(context, target, pattern, replacement):
 def error(context, message):
     ''' raise an exception with an error message '''
     raise Exception(message.value)
+
+@op()
+def brk(context):
+    ''' breakpoint; enter mini debugger '''
+    # TODO: actually a debugger
+    dump.handler(context)
+    print(f'call stack: {context.call_stack}')
+    print(f'data stack: {context.stack}')
+    input(f'breakpoint @{context.pointer}')
 
 # for ease of testing, run this file to get a printout of op codes
 if __name__ == '__main__': dir_ops()

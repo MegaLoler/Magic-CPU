@@ -1,10 +1,10 @@
 ;;; memory management stuff
 
 ; where the pointer to the top of dynamically allocated memory is
-mem_pointer=100h
+mem_pointer=200h
 
 ; where the mem pointer is initialized to
-mem_base=102h
+mem_base=202h
 
 ; setup dynamic memory
 init_mem:

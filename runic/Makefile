@@ -8,7 +8,7 @@ INTERPRETER=../run.py
 
 TARGET_BIN=$(BUILD_DIR)/$(TARGET).rune
 TARGET_SRC=$(SRC_DIR)/$(TARGET).asm
-TARGET_TEST=$(TEST_DIR)/fizz_buzz.spell
+TARGET_TEST=$(TEST_DIR)/hello_world.spell
 
 DEPS=$(SRC_DIR)/*
 

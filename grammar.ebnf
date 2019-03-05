@@ -32,7 +32,12 @@ word::Word = numeral:numeral [ "%16" ] ;
 word_value = word | label ;
 
 # a numeral is a series of digits optionally followed by a base indicator
-numeral::Numeral = digits:(/[0-9a-fA-F]+/) base:[/[bodh]/];
+numeral::Numeral =
+	digits:(/[0-1]+/) base:/[b]/ |
+	digits:(/[0-7]+/) base:/[o]/ |
+	digits:(/[0-9a-fA-F]+/) base:/[h]/ |
+	digits:(/[0-9]+/) base:[/[d]/]
+	;
 
 # a string is a series of characters enclosed in quotations
 string::String = '"' string:(/(?<=\')(.*?)(?=\')|(?<=\")(.*?)(?=\")+/) '"' ; # make better l8r
