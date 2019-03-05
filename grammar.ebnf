@@ -7,7 +7,7 @@
 start = code $ ;
 
 # code is a list of objects
-code::Code = objects:{object}* $ ;
+code::Code = /\s*/ objects:{object}* $ ;
 
 # an object is a label definition or an instruction or a comment to be ignored
 # followed by any whitespace

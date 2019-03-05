@@ -4,11 +4,9 @@
 jmp main
 
 ; includes
-#include variables.asm
-
-#include util.asm
-
+#include globals.asm
 #include file_loader.asm
+#include compile.asm
 
 ; main
 ; main(filename)
@@ -22,7 +20,11 @@ main:
 	; so we can just call the function:
 	; load_file(filename)
 	call load_file
-	echo @source_code%s
+
+	; the source should now be returned as a string on the data stack
+	; now compile it!
+	; the result will be on the stack, ready to return with the main program
+	call compile
 
 	; return with the result of compilation
 	ret

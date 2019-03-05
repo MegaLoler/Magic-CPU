@@ -5,7 +5,7 @@
 SOURCE=asm/$1.asm
 
 # bin file name
-BINARY=bin/$1.bin
+BINARY=bin/$1.rune
 
 # arguments
 shift

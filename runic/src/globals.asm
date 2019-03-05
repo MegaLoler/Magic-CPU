@@ -17,6 +17,3 @@ r12=12
 r13=13
 r14=14
 r15=15
-
-; where the source code gets loaded
-source_code=16

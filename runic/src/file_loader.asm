@@ -5,7 +5,8 @@ load_file:
 	pull @r0%s
 
 	; read in the data
-	read_file @source_code%s, @r0%s
+	read_file @r0%s, @r0%s
 
-	; done
+	; return the read in string
+	push @r0%s
 	ret

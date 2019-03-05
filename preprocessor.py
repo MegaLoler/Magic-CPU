@@ -6,6 +6,19 @@
 import os
 import re
 
+def include(directory, filename):
+    ''' include another file into the code '''
+
+    # get the file to include
+    path = f'{directory}/{filename}'
+
+    # replace the directive with the contents of this file
+    with open(path, 'r') as f:
+        contents = f.read()
+
+    # recursively preprocess this as well!
+    return preprocess(path, contents)
+
 def preprocess(filename, code):
     ''' preprocess the code, taking care of any preprocessor directives '''
 
@@ -18,29 +31,21 @@ def preprocess(filename, code):
         argument = match.group(2)
 
         if directive == 'include':
-
-            # get the file to include
-            path = f'{directory}/{argument}'
-
-            # replace the directive with the contents of this file
-            with open(path, 'r') as f:
-                contents = f.read()
-
-            # recursively preprocess this as well!
-            processed = preprocess(path, contents)
-
-            # and return the results as the replacement
-            return f'{processed}\n'
+            return include(directory, argument)
 
         elif directive == 'nop':
-            return '\n'
+            return ''
 
         else:
             raise Exception(f'Unknown preprocessor directive "{directive}"')
 
+    # strip all comments as well
+    # because the comments are being stripped here,
+    # they could potentially be removed from the grammar
+    code = re.sub(r'\;.*\n', '\n', code)
+
     # match directives (they are lines that start with #)
-    # TODO: find a better regexp that matches directives at the beginning of the file as well
-    code = re.sub(r'\n\#(\w+)[ \t]*(.*)\n', repl, code)
+    code = re.sub(r'^\#(\w+)[ \t]*(.*)\n', repl, code, flags=re.MULTILINE)
 
     # return the postprocessed asssembly code
     return code
