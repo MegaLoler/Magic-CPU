@@ -1,8 +1,8 @@
 ***Note:*** The first part of this document is all explanation of the basics. See the end of this document for a practical tutorial!
 
-# Magic Assembly Basics
+# RuneCore Basics
 
-A program in magic assembly is just a series of **instructions**. The program executes from the very top and goes downwards.
+A program in RuneCore (magic assembly) is just a series of **instructions**. The program executes from the very top and goes downwards.
 
 **Comments** start with a `;`.
 
@@ -203,4 +203,230 @@ jmp loop
 
 # Practical Tutorial
 
-**TODO: write about all the ops and how to do basic things**
+Here are some examples of how to write familiar programming constructs in RuneCore.
+
+## Arithmetic and Logic
+
+The `add` operation takes two arguments, which can each be either a byte or a word, and sets the value of the first argument to be the result. This means that the first argument should be a place in memory, and not an immediate value.
+```asm
+; add 5 to the 16 bit value at memory address 7
+add @7%16, 5
+```
+
+The `sub`, `mul`, `div`, `mod`, `pow`, `inc`, and `dec` operations work similarly.
+
+As do the logical operations `band` (and), `bor` (or), `neg` (not), and `xor` (exclusive or)
+
+## Conditional Branches
+
+Use the `jmpif` operation to create an "if" statement. This operation takes one argument that is to be used as the condition, and a second argument that is the address to jump to (usually you will use a label). If the value is truthy, it will make the jump, otherwise it will not.
+
+```asm
+; test a byte value at memory location 5
+jmpif @5, if_true
+	; this marks the "else" branch
+	echo "the value was falsey"
+
+	; remember now to jump past the "if true" branch!
+	jmp end_if
+
+if_true:
+	; this marks the "if true" branch
+	echo "the value was truthy"
+
+end_if:
+; the program continues...
+```
+
+Sometimes you want to test for equality. To test if a value is equal to another value, subtract the value to compare it with. If the values are equal, the result will be 0, which is falsey, and otherwise the result will be greater than 0, which is truthy.
+
+```asm
+; check if the value in memory location 20 is 5
+; first make a copy of the value to some scratch location, say location 0
+copy @0, @20
+; now subtract the value 5 to compare it with from the scratch copy
+sub @0, 5
+; now if it is NOT equal to 5, the result will be >0 (true)
+; so jump to the "if false" or "else" branch if that is the case
+jmpif @0, else_branch
+	; the value in the scratch location was 0 (false)
+	; that means the original value was equal to 5
+	echo "yay, the value was indeed 5!"
+	jmp end_if
+else_branch:
+	; they weren't equal, so the difference was not 0 (true)
+	; and so the jump to this branch took place
+	echo "aw, the value was not 5!"
+end_if:
+```
+
+"else if" statements or "switch" statements can be written by nesting further "if" statements inside the "else" branch. Here is an example of a "switch" statement that checks if a value at memory location 2 is either 3, 40, 5, or 10:
+```asm
+; load the value to be checked into a scratch location
+copy @0, @2
+; check if it's 3
+sub @0, 3
+; if not, jump to the next test
+jmpif @0, next1
+	echo "it was equal to 3"
+	jmp end
+next1:
+; do the next check, copy the value afresh
+copy @0, @2
+; check if it's 40
+sub @0, 40
+; if not, jump to the next test
+jmpif @0, next2
+	echo "it was equal to 40"
+	jmp end
+next2:
+; do the next check, copy the value afresh
+copy @0, @2
+; check if it's 5
+sub @0, 5
+; if not, jump to the next test
+jmpif @0, next3
+	echo "it was equal to 5"
+	jmp end
+next3:
+; do the last check, copy the value afresh
+copy @0, @2
+; check if it's 10
+sub @0, 10
+; if not, jump to the end
+jmpif @0, end
+	echo "it was equal to 10"
+	; no need to jump now, because the end is right here!
+end:
+```
+
+## Loops
+
+To create a loop, use place a label at the start of the loop, and use the `jmp` and `jmpif` operations to jump from the end of the loop to the begining.
+
+Here is an example of a simple infinite loop:
+```asm
+; mark the beginning of the loop
+loop_start:
+	; echo this forever
+	echo "I am a loop."
+	; and go back to the start of the loop
+	jmp loop_start
+```
+
+Most of the time though you want to attach a condition to your loops. This is done exactly the same way as normal "if" statements, except you jump back to the condition at the end of the body of the loop.
+
+Here is a "while" loop:
+```asm
+; let's make a while loop that loops 10 times
+; let's use memory addres 8 to keep track of the counter
+; initialize it at 10
+copy @8, 10
+; mark the beginning of the loop
+loop_start:
+	; this is the conditional part of the loop
+	jmpif @8, loop_end
+
+	; else, here is the body of the loop!
+	echo "i'm looping so long as memory address 8 is not 0!"
+
+	; decrement @8 until it reaches 0
+	dec @8
+
+	; loop!
+	jmp loop_start
+loop_end:
+```
+
+**TODO: show a "do while" loop where the condition is at the bottom, more efficient in some cases**
+
+## Subroutines/Functions
+
+Subroutines are essentially just pieces of code that get jumped to from various locations, and then jump back to the originating location when done. To jump back to the original location, it has to be kept track of, and this is done using the *call stack*. Use the `call` operation to jump to the subroutine and automatically push the return address onto the call stack. Use the `ret` operation to automatically pop the return address off of the call stack and jump back to that location.
+
+```asm
+; a function to greet people
+greet:
+	; say the message
+	echo "hello there, how are you!"
+	; go back to where you came from
+	ret
+
+; somewhere else in code....
+; let's greet someone!
+call greet
+; let's greet them again!
+call greet
+; and again!
+call greet
+; lol
+```
+
+Many functions take arguments and return values. There are multiple ways of doing this. One way is to designate certain memory locations for use as arguments and return values. However, this doesn't scale well if those locations are fixed, and independant function calls could easily overwrite each other's values. Another way (which I recommend) is to use the *data stack* to pass arguments to functions and to return values from functions.
+
+```asm
+; a function to double a 16-bit number
+; double(num) => num * 2
+double:
+	; grab the argument off the stack onto a temporary location
+	pull @0%16
+
+	; double it
+	mul @0%16, 2
+
+	; push the value to return back onto the stack
+	push @0%16
+
+	; and return!
+	ret
+
+; somewhere in the program...
+; let's double a number several times!
+; let's start with 3
+copy @0%16, 3
+echo @0%16
+
+; double it
+; pushing the argument to the function onto the stack
+push @0%16
+call double
+
+; print the result
+; pull the return value off the stack and print it
+pull @0%16
+echo @0%16
+
+; double it again!
+; pushing the argument to the function onto the stack again
+push @0%16
+call double
+
+; print the result
+; pull the return value off the stack and print it
+pull @0%16
+echo @0%16
+
+; double it yet again!
+; pushing the argument to the function onto the stack yet again
+push @0%16
+call double
+
+; print the result
+; pull the return value off the stack and print it
+pull @0%16
+echo @0%16
+```
+
+You can also have functions that accept multiple arguments and return multiple values by pushing multiple values to the stack as arguments or return values. Just be wary that you must push the arguments in the reverse order that they will be pulled, because the stack is a last-in-first-out structure!
+
+**TODO: example of multiple argument functions and return values**
+
+## Memory Management
+
+How you make use of the stack and memory is up to you, but here are some recommendations.
+
+Use the stack for all **local variables**. This way you can recursively call functions and the relevant data for that scope is always at the top of the stack as long as your stack remains balanced (you remember to pull everything you push).
+
+Use memory for all **global variables**. Memory works great for global data because memory locations are fixed and can be accessed equally at any point in program execution.
+
+Reserve the first 16 bytes or so of memory as **temporary registers**. These can be used to pass values to operations. Never rely on their contents being valid after a function call. Assume that any function you define may alter the contents of them. Push any data you need to save onto the stack before calling any functions, and then pop it back off when you are done.

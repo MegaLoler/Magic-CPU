@@ -373,5 +373,25 @@ def leng(context, length, string):
     ''' get the length of a string '''
     length.value = len(string.value)
 
+@op((byte_type, word_type,), (byte_type, word_type,),)
+def gt(context, a, b):
+    ''' set a to 1 if a > b else 0 '''
+    a.value = 1 if a.value > b.value else 0
+
+@op((byte_type, word_type,), (byte_type, word_type,),)
+def lt(context, a, b):
+    ''' set a to 1 if a < b else 0 '''
+    a.value = 1 if a.value < b.value else 0
+
+@op((byte_type, word_type,), (byte_type, word_type,),)
+def eq(context, a, b):
+    ''' set a to 1 if a == b else 0 '''
+    a.value = 1 if a.value == b.value else 0
+
+@op((byte_type, word_type,), (byte_type, word_type,),)
+def neq(context, a, b):
+    ''' set a to 1 if a != b else 0 '''
+    a.value = 1 if a.value != b.value else 0
+
 # for ease of testing, run this file to get a printout of op codes
 if __name__ == '__main__': dir_ops()
