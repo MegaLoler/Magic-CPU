@@ -199,7 +199,27 @@ jmp loop
 
 ## The Stacks
 
-**TODO: write about the data stack and the call stack**
+A stack a data structure that increases in size as you add data to it. It decreases in size when you take data out of it. It is a LIFO (last-in-first-out) structure. That means that when you take a piece of data off of the stack, the data that you will receive is the most recent piece of data that you put onto it. Putting data onto the stack is called **pushing** the data onto the top of the stack. Getting that data back off of the stack is called **pulling** (or *popping*) the data back off the top of the stack.
+
+Visualize the stack as a physical stack of items. When you push an item onto the stack, you set it on top of the stack of items. When you pull an item off of the stack, you pick up the item that is sitting on the top.
+
+There are two stacks in RuneCore: the **data stack** and the **call stack**. The call stack is used by the `call` and `ret` opcodes to keep track of where to jump back to when returning from a function. You don't need to worry about this stack at all. The data stack is the stack that you can access with the `push` and `pull` operations.
+
+Here is an example of pushing the string `hello, stack` onto the data stack, followed by pulling it back of onto memory location 0, and printing it:
+```asm
+; push it to the stack
+push "hello, stack"
+
+; get the most recent item pushed to the stack and put it at memory location 0
+; (treating it as a string)
+pull @0%s
+
+; echo that message
+echo @0%s
+; => "hello, stack"
+```
+
+The stack is useful for keeping track of **local variables**, for passing **arguments** and **return values** to and from functions. See the below section on subroutines/functions for more information.
 
 # Practical Tutorial
 
